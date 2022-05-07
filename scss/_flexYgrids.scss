@@ -1,0 +1,43 @@
+.grid-container {
+  padding: 0px;
+  display: grid;
+  margin: 0;
+  grid-template-rows: 0.01fr 0.1fr 0.1fr 0.1fr 4fr 0.01;
+  grid-template-columns: 100%;
+
+  justify-items: stretch;
+  align-items: stretch;
+  align-content: center;
+  justify-content: center;
+  grid-template-areas:
+    "header "
+    "anuncios "
+    "sidebar"
+    "buscador "
+    "muestrario "
+    "footer ";
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  text-align: justify;
+
+  justify-items: center;
+  padding: 1rem;
+}
+
+.fila {
+  margin: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.fila--wrap {
+  flex-wrap: wrap;
+}
+
+.fila--notwrap {
+  flex-wrap: nowrap;
+}

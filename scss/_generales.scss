@@ -1,0 +1,208 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: $color-fondo;
+  color: $font-color;
+  min-height: calc(100vh - $altura-footer);
+}
+
+.historiaEmpresa {
+  color: rgb(255, 255, 255);
+}
+
+.container {
+  margin: 1rem auto;
+}
+
+.articuloMuestrario {
+  margin: 0.5rem 0.5rem;
+  color: #212121;
+  font-weight: bold;
+  text-align: center;
+  max-width: 260px;
+  border: 3px solid rgb(255, 255, 255);
+  border-radius: 1rem;
+  img {
+    align-self: center;
+    max-width: 250px;
+    border-radius: 1rem;
+    overflow: hidden;
+    filter: brightness(1.1);
+    mix-blend-mode: multiply;
+  }
+
+  img:hover {
+    transform: scale(1.1, 1.1);
+  }
+}
+
+.articuloMuestrario__descripcion {
+  color: #212121;
+  font-weight: bold;
+  text-align: center;
+}
+
+.secPopular {
+  color: rgb(50, 70, 255);
+  margin: 10px;
+  border-radius: 20px;
+  animation: animacion 2s ease-in-out 2s infinite alternate;
+  background-color: rgb(179, 179, 179);
+
+  .container {
+    ul {
+      list-style: none;
+      font-weight: bold;
+    }
+  }
+}
+
+.suscripcion {
+  form {
+    input[type="text"] {
+      height: 30px;
+    }
+  }
+}
+
+.muestrario {
+  background-color: rgb(179, 179, 179);
+  grid-area: muestrario;
+  padding: 10px;
+  text-align: center;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  padding: 10px 10px;
+  background-color: rgb(138, 138, 138);
+  text-align: center;
+}
+
+.productos {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 12px;
+}
+
+.articulo {
+  display: flex;
+  flex: 0 1 300px;
+  flex-direction: column;
+  border: 1px solid black;
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+.articulo__nombre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  font-size: 25px;
+  text-decoration: wavy;
+  height: 130px;
+}
+.articulo__precio {
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 25px;
+}
+
+.articulo__caracteristicas {
+  margin: 10px 10px;
+}
+.articulo__imagen {
+  margin-bottom: 10px;
+  order: -1;
+  align-self: center;
+  max-width: 250px;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.articulo__boton-compra {
+  background: black;
+  color: white;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 1rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.horarios {
+  padding: 10px;
+  margin: 10px;
+  font-size: 25px;
+}
+
+.vtaTelefonica {
+  padding: 10px;
+  margin: 10px;
+  font-size: 25px;
+}
+
+.fundadores {
+  margin: 12px 12px;
+  text-align: center;
+  font-size: 25px;
+}
+
+.fundador__foto {
+  max-height: 250px;
+  border-radius: 50%;
+  border: 5px solid rgb(226, 226, 226);
+  margin: 12px;
+}
+.fundador__nombre {
+  font-size: 23px;
+}
+
+.parrafo {
+  margin: 20px 20px;
+}
+
+.parrafo__titulo {
+  font-size: 33px;
+
+  text-align: center;
+}
+.parrafo__texto {
+  margin-top: 10px;
+  font-size: 25px;
+  text-align: justify;
+}
+
+.titulo-pagina {
+  text-align: center;
+  padding: 10px;
+}
+
+.cuerpoPagina {
+  min-height: calc(100vh - $altura-footer - $altura-header);
+}
+
+.sucursal {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.sucursal__direccion {
+  padding: 10px;
+}
+
+.sucursal__mapa {
+  width: 300px;
+  height: 350px;
+  border-style: none;
+}

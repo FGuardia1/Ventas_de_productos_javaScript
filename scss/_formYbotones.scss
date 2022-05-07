@@ -1,0 +1,22 @@
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  background-color: #002cbb;
+  color: white;
+  padding: 12px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 6px;
+  min-height: 43px;
+}
+
+.buscador {
+  grid-area: buscador;
+  margin: 10px 10px;
+  input[type="text"] {
+    width: 200px;
+    height: 35px;
+    border-radius: 6px;
+  }
+}

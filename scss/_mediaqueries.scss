@@ -1,0 +1,69 @@
+@media (min-width: 1080px) {
+  .grid-container {
+    padding: 0px;
+    display: grid;
+    grid-template-rows: auto auto auto 1.5fr auto;
+    grid-template-columns: 80% auto;
+
+    justify-items: stretch;
+    align-items: stretch;
+    align-content: center;
+    justify-content: center;
+    grid-template-areas:
+      "header header"
+      "anuncios anuncios"
+      "buscador sidebar"
+      "muestrario sidebar"
+      "footer footer";
+  }
+
+  .header {
+    min-height: $altura-header;
+  }
+
+  .nav-toggle {
+    display: none;
+  }
+  .nav {
+    visibility: visible;
+    display: flex;
+    flex-direction: row;
+    align-content: stretch;
+    align-items: stretch;
+    justify-content: stretch;
+    justify-items: center;
+    height: auto;
+    position: relative;
+    font-size: 1rem;
+  }
+  .nav__list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .row {
+    margin: 1.2rem 0.5;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .iniciarSesion {
+    display: flex;
+    flex-direction: row;
+    margin-left: 1rem;
+  }
+
+  .buscador {
+    input[type="text"] {
+      width: 600px;
+    }
+  }
+}

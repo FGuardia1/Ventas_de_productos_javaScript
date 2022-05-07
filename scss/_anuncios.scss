@@ -1,0 +1,9 @@
+.anuncios {
+  grid-area: anuncios;
+
+  .anuncios__banner {
+    width: 100%;
+    display: block;
+    overflow: hidden;
+  }
+}

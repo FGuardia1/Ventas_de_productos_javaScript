@@ -1,0 +1,490 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: #b3b3b3;
+  color: white;
+  min-height: calc(100vh - 114px);
+}
+
+.historiaEmpresa {
+  color: white;
+}
+
+.container {
+  margin: 1rem auto;
+}
+
+.articuloMuestrario {
+  margin: 0.5rem 0.5rem;
+  color: #212121;
+  font-weight: bold;
+  text-align: center;
+  max-width: 260px;
+  border: 3px solid white;
+  border-radius: 1rem;
+}
+.articuloMuestrario img {
+  align-self: center;
+  max-width: 250px;
+  border-radius: 1rem;
+  overflow: hidden;
+  filter: brightness(1.1);
+  mix-blend-mode: multiply;
+}
+.articuloMuestrario img:hover {
+  transform: scale(1.1, 1.1);
+}
+
+.articuloMuestrario__descripcion {
+  color: #212121;
+  font-weight: bold;
+  text-align: center;
+}
+
+.secPopular {
+  color: #3246ff;
+  margin: 10px;
+  border-radius: 20px;
+  animation: animacion 2s ease-in-out 2s infinite alternate;
+  background-color: #b3b3b3;
+}
+.secPopular .container ul {
+  list-style: none;
+  font-weight: bold;
+}
+
+.suscripcion form input[type=text] {
+  height: 30px;
+}
+
+.muestrario {
+  background-color: #b3b3b3;
+  grid-area: muestrario;
+  padding: 10px;
+  text-align: center;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  padding: 10px 10px;
+  background-color: #8a8a8a;
+  text-align: center;
+}
+
+.productos {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 12px;
+}
+
+.articulo {
+  display: flex;
+  flex: 0 1 300px;
+  flex-direction: column;
+  border: 1px solid black;
+  border-radius: 1rem;
+  padding: 2rem;
+}
+
+.articulo__nombre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 25px;
+  text-decoration: wavy;
+  height: 130px;
+}
+
+.articulo__precio {
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 25px;
+}
+
+.articulo__caracteristicas {
+  margin: 10px 10px;
+}
+
+.articulo__imagen {
+  margin-bottom: 10px;
+  order: -1;
+  align-self: center;
+  max-width: 250px;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.articulo__boton-compra {
+  background: black;
+  color: white;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 1rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.horarios {
+  padding: 10px;
+  margin: 10px;
+  font-size: 25px;
+}
+
+.vtaTelefonica {
+  padding: 10px;
+  margin: 10px;
+  font-size: 25px;
+}
+
+.fundadores {
+  margin: 12px 12px;
+  text-align: center;
+  font-size: 25px;
+}
+
+.fundador__foto {
+  max-height: 250px;
+  border-radius: 50%;
+  border: 5px solid #e2e2e2;
+  margin: 12px;
+}
+
+.fundador__nombre {
+  font-size: 23px;
+}
+
+.parrafo {
+  margin: 20px 20px;
+}
+
+.parrafo__titulo {
+  font-size: 33px;
+  text-align: center;
+}
+
+.parrafo__texto {
+  margin-top: 10px;
+  font-size: 25px;
+  text-align: justify;
+}
+
+.titulo-pagina {
+  text-align: center;
+  padding: 10px;
+}
+
+.cuerpoPagina {
+  min-height: calc(100vh - 114px - 99px);
+}
+
+.sucursal {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.sucursal__direccion {
+  padding: 10px;
+}
+
+.sucursal__mapa {
+  width: 300px;
+  height: 350px;
+  border-style: none;
+}
+
+header {
+  background: linear-gradient(to right, #4458c9, #061b5e);
+  padding: 0.5rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  grid-area: header;
+  min-height: 99px;
+}
+
+a img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 0.5rem;
+}
+
+.row {
+  margin: 1.2rem 0.5;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav {
+  visibility: hidden;
+  height: 0;
+  position: absolute;
+  font-size: 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav__list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav__item {
+  margin: 0 0 0 1rem;
+}
+
+.nav__link {
+  color: white;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.nav__link:hover,
+.nav__link:focus {
+  opacity: 0.65;
+}
+
+.nav-toggle {
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 3rem;
+  height: 3rem;
+  padding: 0em;
+  border-radius: 0.25rem;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  transition: opacity 250ms ease;
+  position: absolute;
+  left: 0;
+}
+
+.nav-toggle:focus,
+.nav-toggle:hover {
+  opacity: 0.75;
+}
+
+.hamburger {
+  width: 50%;
+  position: relative;
+}
+
+.hamburger,
+.hamburger::before,
+.hamburger::after {
+  display: block;
+  margin: 0 auto;
+  height: 3px;
+  background: white;
+}
+
+.hamburger::before,
+.hamburger::after {
+  content: "";
+  width: 100%;
+}
+
+.hamburger::before {
+  transform: translateY(-6px);
+}
+
+.hamburger::after {
+  transform: translateY(3px);
+}
+
+.nav--visible {
+  visibility: visible;
+  height: auto;
+  position: relative;
+}
+
+.iniciarSesion {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-container {
+  padding: 0px;
+  display: grid;
+  margin: 0;
+  grid-template-rows: 0.01fr 0.1fr 0.1fr 0.1fr 4fr 0.01;
+  grid-template-columns: 100%;
+  justify-items: stretch;
+  align-items: stretch;
+  align-content: center;
+  justify-content: center;
+  grid-template-areas: "header " "anuncios " "sidebar" "buscador " "muestrario " "footer ";
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  text-align: justify;
+  justify-items: center;
+  padding: 1rem;
+}
+
+.fila {
+  margin: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.fila--wrap {
+  flex-wrap: wrap;
+}
+
+.fila--notwrap {
+  flex-wrap: nowrap;
+}
+
+.footer {
+  padding-top: 10px;
+  background-color: black;
+  grid-area: footer;
+  min-height: 114px;
+}
+
+.footer-sm {
+  background-color: #212121;
+  color: white;
+}
+.footer-sm a {
+  color: white;
+}
+.footer-sm a i {
+  font-size: 1rem;
+  margin-left: 1rem;
+}
+
+.footer-sm__icons {
+  text-align: center;
+  padding: 2px 0;
+}
+
+.footer-bottom {
+  padding: 2px 0;
+}
+
+.footer-bottom__copyright {
+  text-align: center;
+  color: gray;
+  font-weight: 400;
+}
+
+input[type=button],
+input[type=submit],
+input[type=reset] {
+  background-color: #002cbb;
+  color: white;
+  padding: 12px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 6px;
+  min-height: 43px;
+}
+
+.buscador {
+  grid-area: buscador;
+  margin: 10px 10px;
+}
+.buscador input[type=text] {
+  width: 200px;
+  height: 35px;
+  border-radius: 6px;
+}
+
+.anuncios {
+  grid-area: anuncios;
+}
+.anuncios .anuncios__banner {
+  width: 100%;
+  display: block;
+  overflow: hidden;
+}
+
+@keyframes animacion {
+  to {
+    transform: scale(0.9, 0.9);
+  }
+}
+@media (min-width: 1080px) {
+  .grid-container {
+    padding: 0px;
+    display: grid;
+    grid-template-rows: auto auto auto 1.5fr auto;
+    grid-template-columns: 80% auto;
+    justify-items: stretch;
+    align-items: stretch;
+    align-content: center;
+    justify-content: center;
+    grid-template-areas: "header header" "anuncios anuncios" "buscador sidebar" "muestrario sidebar" "footer footer";
+  }
+
+  .header {
+    min-height: 99px;
+  }
+
+  .nav-toggle {
+    display: none;
+  }
+
+  .nav {
+    visibility: visible;
+    display: flex;
+    flex-direction: row;
+    align-content: stretch;
+    align-items: stretch;
+    justify-content: stretch;
+    justify-items: center;
+    height: auto;
+    position: relative;
+    font-size: 1rem;
+  }
+
+  .nav__list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .row {
+    margin: 1.2rem 0.5;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .iniciarSesion {
+    display: flex;
+    flex-direction: row;
+    margin-left: 1rem;
+  }
+
+  .buscador input[type=text] {
+    width: 600px;
+  }
+}
+
+/*# sourceMappingURL=estilos.css.map */
