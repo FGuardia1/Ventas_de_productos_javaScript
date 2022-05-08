@@ -29,6 +29,10 @@ function verificarStock(producto, cantidad) {
 function Tarjeta(nro, titular) {
   this.nro = nro;
   this.titular = titular;
+  this.realizarPago = function (cvv) {
+    ////aqui se realizara el pago por tarjeta
+    return true;
+  };
 }
 function Venta(fecha, producto, cantidad, tarjeta) {
   this.fecha = fecha;
@@ -74,10 +78,11 @@ let codProducto = parseInt(
 );
 let cantidad = parseInt(prompt("Ingrese cantidad que quiere comprar"));
 
+////compruebo que los datos ingresados esten en el rango de datos permitidos
 if (!validarDatos(codProducto, cantidad)) {
-  ////compruebo que los datos ingresados esten en el rango de datos permitidos
   console.log("Datos ingresados no validos");
 } else {
+  ///selecciona el producto por el codigo ingresado
   switch (codProducto) {
     case 1:
       productoVta = producto1;
@@ -89,36 +94,43 @@ if (!validarDatos(codProducto, cantidad)) {
       productoVta = producto3;
       break;
   }
+
+  ///verifico que el stock actual del producto alcance a cubrir la cantidad pedida
   if (!verificarStock(productoVta, cantidad)) {
-    ///verifico que el stock actual del producto alcance a cubrir la cantidad pedida
     console.log("No hay suficiente stock");
   } else {
     let nrotarjeta = prompt("Ingrese nro de tarjeta");
     let titular = prompt("Ingrese titular de la tarjeta");
     let tarjetaCVV = prompt("Ingrese CVV de la tarjeta");
     const tarjeta1 = new Tarjeta(nrotarjeta, titular);
-    let fecha = new Date();
-    const venta1 = new Venta(fecha, productoVta, cantidad, tarjeta1.nro);
-    ///una vez registrada la compra hago el descuento al producto correspondiente
-    switch (codProducto) {
-      case 1:
-        producto1.descontarStock(cantidad);
-        break;
-      case 2:
-        producto2.descontarStock(cantidad);
-        break;
-      case 3:
-        producto3.descontarStock(cantidad);
+
+    ////realiza el pago por tarjeta, duvuelve true si pudo, sino false
+    if (!tarjeta1.realizarPago(tarjetaCVV)) {
+      console.log("No se pudo realizar el pago");
+    } else {
+      let fecha = new Date();
+      const venta1 = new Venta(fecha, productoVta, cantidad, tarjeta1.nro);
+      ///una vez registrada la compra hago el descuento de stock al producto correspondiente
+      switch (codProducto) {
+        case 1:
+          producto1.descontarStock(cantidad);
+          break;
+        case 2:
+          producto2.descontarStock(cantidad);
+          break;
+        case 3:
+          producto3.descontarStock(cantidad);
+      }
+      /////informo por consola que la venta se realizo exitosamente
+      console.log(
+        "Se compro con exito " +
+          productoVta.nombre +
+          " en cantidad de " +
+          cantidad +
+          " por un precio de $" +
+          venta1.total +
+          " Puede pasar a retirar su compra por cualquiera de nuestras sucursales "
+      );
     }
-    /////informo por consola que la venta se realizo exitosamente
-    console.log(
-      "Se compro con exito " +
-        productoVta.nombre +
-        " en cantidad de " +
-        cantidad +
-        " por un precio de $" +
-        venta1.total +
-        " Puede pasar a retirar su compra por cualquiera de nuestras sucursales "
-    );
   }
 }
