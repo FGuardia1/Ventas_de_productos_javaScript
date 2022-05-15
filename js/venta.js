@@ -105,13 +105,16 @@ for (const producto of arrayProd) {
 /////////Aqui empieza el ingreso de datos de los productos a comprar
 let productoVta;
 let codProducto = parseInt(
-  prompt("Ingrese codigo de producto: " + listaProductos)
+  prompt(
+    "Ingrese codigo de producto: " +
+      listaProductos +
+      "\n Ingrese -1 para terminar de ingresar productos "
+  )
 );
-if (codProducto != -1) {
-  let cantidad = parseInt(prompt("Ingrese cantidad que quiere comprar"));
-}
 
+///sigue preguntando para comprar productos hasta ingresar -1 como codigo de producto
 while (codProducto != -1) {
+  cantidad = parseInt(prompt("Ingrese cantidad que quiere comprar"));
   ////compruebo que los datos ingresados esten en el rango de datos permitidos
   if (!validarDatos(codProducto, cantidad)) {
     console.log("Datos ingresados no validos");
@@ -137,11 +140,12 @@ while (codProducto != -1) {
   }
 
   codProducto = parseInt(
-    prompt("Ingrese codigo de producto: " + listaProductos)
+    prompt(
+      "Ingrese codigo de producto: " +
+        listaProductos +
+        "\n Ingrese -1 para terminar de ingresar productos "
+    )
   );
-  if (codProducto != -1) {
-    cantidad = parseInt(prompt("Ingrese cantidad que quiere comprar"));
-  }
 }
 
 if (arrayProdVta.length != 0) {
@@ -157,16 +161,28 @@ if (arrayProdVta.length != 0) {
     let fecha = new Date();
     const venta1 = new Venta(fecha, arrayProdVta, tarjeta1.nro);
     ///una vez registrada la compra hago el descuento de stock al/los producto/s correspondiente/s
+    //  y hago la lista de los productos para luego mostrarlo por pantalla
+    let listaCompra = "";
 
     for (const producto of arrayProdVta) {
       arrayProd[producto.id].descontarStock(cantidad);
+      listaCompra =
+        listaCompra +
+        "\n" +
+        producto.id +
+        "-" +
+        producto.nombre +
+        " cantidad:" +
+        producto.cantidad;
     }
 
     /////informo por consola que la venta se realizo exitosamente
     console.log(
-      "Se compro con exito  por un precio de $" +
+      "Se compro con exito:" +
+        listaCompra +
+        "\n  por un precio total de $" +
         venta1.total +
-        " Puede pasar a retirar su compra por cualquiera de nuestras sucursales "
+        "\n Puede pasar a retirar su compra por cualquiera de nuestras sucursales "
     );
   }
 }
