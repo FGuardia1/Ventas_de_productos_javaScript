@@ -102,68 +102,12 @@
       </div>
 
       <div class="muestrario">
+        <!--De haber compra, este texto sera reemplazado por la lista de compras-->
+        <div class="compra" id="listaCompra">Aun no ha comprado nada</div>
+        <button class="comprar__boton" id="botonCompra">Comprar</button>
         <h1>Muestrario de nuestros productos informaticos</h1>
-        <div class="productos">
-          <div class="articulo">
-            <div class="articulo__nombre">
-              Mouse Redragon Griffin M607 RGB USB 7200DPI
-            </div>
-
-            <div class="articulo__precio">$1730</div>
-            <ul class="articulo__caracteristicas">
-              <li>Utiliza cable.</li>
-              <li>Posee rueda de desplazamiento.</li>
-              <li>Cuenta con 7 botones para un mayor control.</li>
-              <li>Con luces para mejorar la experiencia de uso.</li>
-              <li>Con sensor óptico.</li>
-              <li>Resolución de 7200dpi.</li>
-            </ul>
-            <img class="articulo__imagen" src="./images/Mouse.png" alt="" />
-            <button class="articulo__boton-compra">COMPRAR</button>
-          </div>
-
-          <div class="articulo">
-            <div class="articulo__nombre">
-              Memoria Patriot Viper Steel 8gb Ddr4 3200mhz
-            </div>
-            <div class="articulo__precio">$4720</div>
-            <ul class="articulo__caracteristicas">
-              <li>Tecnología: DDR4 Non-ECC Unbuffered</li>
-              <li>Tipo: DIMM</li>
-              <li>Disipador de aluminio</li>
-              <li>Capacidad: 8GB (1x8GB)</li>
-              <li>Frecuencia: 3200MHz (PC4-25600)</li>
-              <li>Latencia: 16-20-20-40</li>
-              <li>Voltage: 1,35V</li>
-            </ul>
-            <img
-              class="articulo__imagen"
-              src="./images/memoriaRam.png"
-              alt=""
-            />
-            <button class="articulo__boton-compra">COMPRAR</button>
-          </div>
-
-          <div class="articulo">
-            <div class="articulo__nombre">
-              Placa de Video Powercolor Radeon RX 550 Red Dragon 4GB GDDR5
-            </div>
-            <div class="articulo__precio">$35500</div>
-            <ul class="articulo__caracteristicas">
-              <li>Graphics Engine AXRX 550 4GBD5-HLE</li>
-              <li>Video Memory 4GB GDDR5</li>
-              <li>Stream Processor 512 Units</li>
-              <li>Engine Clock(OC) up to 1071MHz with boost</li>
-              <li>Engine Clock(STD/Silent)</li>
-              <li>Memory Clock 1500MHz x4 (6.0 Gbps)</li>
-            </ul>
-            <img
-              class="articulo__imagen"
-              src="./images/placaVideo.png"
-              alt=""
-            />
-            <button class="articulo__boton-compra">COMPRAR</button>
-          </div>
+        <div class="productos" id="listaProductos">
+          <!---Aqui ira la lista de productos cargadas-->
         </div>
       </div>
 

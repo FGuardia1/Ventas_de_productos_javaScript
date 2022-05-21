@@ -19,33 +19,6 @@ body {
   margin: 1rem auto;
 }
 
-.articuloMuestrario {
-  margin: 0.5rem 0.5rem;
-  color: #212121;
-  font-weight: bold;
-  text-align: center;
-  max-width: 260px;
-  border: 3px solid white;
-  border-radius: 1rem;
-}
-.articuloMuestrario img {
-  align-self: center;
-  max-width: 250px;
-  border-radius: 1rem;
-  overflow: hidden;
-  filter: brightness(1.1);
-  mix-blend-mode: multiply;
-}
-.articuloMuestrario img:hover {
-  transform: scale(1.1, 1.1);
-}
-
-.articuloMuestrario__descripcion {
-  color: #212121;
-  font-weight: bold;
-  text-align: center;
-}
-
 .secPopular {
   color: #3246ff;
   margin: 10px;
@@ -199,6 +172,12 @@ body {
   width: 300px;
   height: 350px;
   border-style: none;
+}
+
+.compra {
+  padding: 10px;
+  text-align: left;
+  font-size: 25px;
 }
 
 header {
@@ -407,6 +386,18 @@ input[type=reset] {
   width: 200px;
   height: 35px;
   border-radius: 6px;
+}
+
+.comprar__boton {
+  background-color: #002cbb;
+  color: white;
+  padding: 12px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 6px;
+  min-height: 60px;
+  width: 260px;
 }
 
 .anuncios {
