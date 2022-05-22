@@ -14,15 +14,11 @@ const arrayProd = [];
 const arrayProdVta = [];
 
 //////Declaracion de funciones
-function validarDatos(codProducto, cantidad) {
-  if (codProducto < 0 || codProducto > arrayProd.length - 1) {
-    return false;
+function validarDatos(cantidad) {
+  if (cantidad > 0) {
+    return true;
   }
-
-  if (cantidad < 0) {
-    return false;
-  }
-  return true;
+  return false;
 }
 
 function Tarjeta(nro, titular) {
@@ -97,14 +93,32 @@ function visualizarProd(arrayProd) {
 }
 
 function enlistarProducto(codProducto) {
-  let productoVta;
-  let cantidad = prompt("Ingrese cantidad");
-  if (!validarDatos(codProducto, cantidad)) {
-    console.log("Datos ingresados no validos");
-  } else {
-    ///selecciona el producto por el codigo ingresado
-    productoVta = arrayProd[codProducto];
+  let productoVta = arrayProd[codProducto];
 
+  let listado = document.getElementById("listaCompraPendiente");
+
+  let contenedor = document.createElement("div");
+  contenedor.className = "compraPendiente__item";
+  contenedor.innerHTML = ` <label>${productoVta.nombre}:</label>
+  <input type="text" id="textCant${productoVta.id}" placeholder="Ingrese cantidad" />
+  <input type="button" id="buttonCant${productoVta.id}" value="Añadir" />`;
+
+  ////añado el item del producto a comprar en la pagina para poder ingresar cantidad
+  listado.appendChild(contenedor);
+  let boton = document.getElementById("buttonCant" + productoVta.id);
+  boton.onclick = () => {
+    confirmarProducto(productoVta.id);
+  };
+}
+
+function confirmarProducto(codProducto) {
+  let cantidad = document.getElementById("textCant" + codProducto).value;
+  ///selecciona el producto por el codigo ingresado
+  let productoVta = arrayProd[codProducto];
+
+  if (!validarDatos(cantidad)) {
+    alert("Datos ingresados no validos");
+  } else {
     ///verifico que el stock actual del producto alcance a cubrir la cantidad pedida
     if (!productoVta.verificarStock(cantidad)) {
       alert("No hay suficiente stock");
@@ -119,54 +133,91 @@ function enlistarProducto(codProducto) {
         )
       );
       alert("Producto añadido a la lista");
+      ////desactivo el boton que acciono el evento
+      document.getElementById("buttonCant" + codProducto).disabled = true;
     }
   }
 }
 
 function comprar() {
   if (arrayProdVta.length != 0) {
-    let nrotarjeta = prompt("Ingrese nro de tarjeta");
-    let titular = prompt("Ingrese titular de la tarjeta");
-    let tarjetaCVV = prompt("Ingrese CVV de la tarjeta");
-    const tarjeta1 = new Tarjeta(nrotarjeta, titular);
+    let areaForm = document.getElementById("AreaformPago");
 
-    ////realiza el pago por tarjeta, duvuelve true si pudo, sino false
-    if (!tarjeta1.realizarPago(tarjetaCVV)) {
-      alert("No se pudo realizar el pago");
-    } else {
-      let fecha = new Date();
-      const venta1 = new Venta(fecha, arrayProdVta, tarjeta1.nro);
-      ///una vez registrada la compra hago el descuento de stock al/los producto/s correspondiente/s
-      //  y hago la lista de los productos para luego mostrarlo por pantalla
-      let listaCompra = "";
+    let formulario = document.createElement("form");
+    formulario.setAttribute("id", "formPago");
+    formulario.innerHTML = `  <label for="tarjeta">Ingrese nro de tarjeta:</label>
+    <input type="text" name="tarjeta"  />
+    <label for="titular">Ingrese titular de la tarjeta:</label>
+    <input type="text" name="titular"  />
+    <label for="cvv">Ingrese CVV de la tarjeta:</label>
+    <input type="text" name="cvv"  />
 
-      for (const producto of arrayProdVta) {
-        arrayProd[producto.id].descontarStock(producto.cantidad);
-        listaCompra =
-          listaCompra +
-          "\n" +
-          producto.id +
-          "-" +
-          producto.nombre +
-          " cantidad:" +
-          producto.cantidad;
-      }
+    <input type="submit" id="botonConfirmar" value="Comfirmar Compra" />
+    <input type="reset" value="Borrar Datos" />`;
 
-      /////informo que la venta se realizo exitosamente, reemplazando el texto/html que hay en el
-      /// elemento con ID=listaCompra, que tiene Aviso que no se compro nada aun por defecto
-      let anuncioCompra = document.getElementById("listaCompra");
-      let parrafo = document.createElement("p");
-      parrafo.innerText =
-        "Se compro con exito:" +
+    ////añado el formulario
+    areaForm.appendChild(formulario);
+    ///creo el evento submit
+    let miFormulario = document.getElementById("formPago");
+    miFormulario.addEventListener("submit", confirmarCompra);
+    ///desactivo por el momento el boton de comprar
+    document.getElementById("botonCompra").disabled = true;
+  }
+}
+
+function confirmarCompra(e) {
+  e.preventDefault();
+  //Obtenemos el elemento desde el cual se disparó el evento
+  let formulario = e.target;
+
+  console.log(formulario.children[0].value);
+  let nrotarjeta = formulario.children[1].value;
+  let titular = formulario.children[3].value;
+  let tarjetaCVV = formulario.children[5].value;
+  const tarjeta1 = new Tarjeta(nrotarjeta, titular);
+
+  ////realiza el pago por tarjeta, duvuelve true si pudo, sino false
+  if (!tarjeta1.realizarPago(tarjetaCVV)) {
+    alert("No se pudo realizar el pago");
+  } else {
+    let fecha = new Date();
+    const venta1 = new Venta(fecha, arrayProdVta, tarjeta1.nro);
+    ///una vez registrada la compra hago el descuento de stock al/los producto/s correspondiente/s
+    //  y hago la lista de los productos para luego mostrarlo por pantalla
+    let listaCompra = "";
+
+    for (const producto of arrayProdVta) {
+      arrayProd[producto.id].descontarStock(producto.cantidad);
+      listaCompra =
         listaCompra +
-        "\n  por un precio total de $" +
-        venta1.total +
-        "\n Puede pasar a retirar su compra por cualquiera de nuestras sucursales ";
-      anuncioCompra.innerHTML = parrafo.innerHTML;
-
-      ////vacio el array de compra
-      while (arrayProdVta.length > 0) arrayProdVta.pop();
+        "\n" +
+        producto.id +
+        "-" +
+        producto.nombre +
+        " cantidad:" +
+        producto.cantidad;
     }
+
+    /////informo que la venta se realizo exitosamente, reemplazando el texto/html que hay en el
+    /// elemento con ID=listaCompra, que tiene Aviso que no se compro nada aun por defecto
+    let anuncioCompra = document.getElementById("listaCompra");
+    let parrafo = document.createElement("p");
+    parrafo.innerText =
+      "Se compro con exito:" +
+      listaCompra +
+      "\n  por un precio total de $" +
+      venta1.total +
+      "\n Puede pasar a retirar su compra por cualquiera de nuestras sucursales ";
+    anuncioCompra.innerHTML = parrafo.innerHTML;
+
+    ////vacio el array de compra
+    while (arrayProdVta.length > 0) arrayProdVta.pop();
+    ///quito el form de pago
+    document.getElementById("formPago").remove();
+    ///quito la lista de productos
+    document.getElementById("listaCompraPendiente").innerHTML = "";
+    ///reactivo por el momento el boton de comprar
+    document.getElementById("botonCompra").disabled = false;
   }
 }
 
