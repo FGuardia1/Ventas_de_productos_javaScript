@@ -113,7 +113,7 @@ function enlistarProducto(codProducto) {
 
 function confirmarProducto(codProducto) {
   let cantidad = document.getElementById("textCant" + codProducto).value;
-  ///selecciona el producto por el codigo ingresado
+  ///selecciona el producto por el codigo
   let productoVta = arrayProd[codProducto];
 
   if (!validarDatos(cantidad)) {
@@ -133,13 +133,13 @@ function confirmarProducto(codProducto) {
         )
       );
       alert("Producto añadido a la lista");
-      ////desactivo el boton que acciono el evento
+      ////desactivo el boton que acciono el evento, para no volver a usarlo
       document.getElementById("buttonCant" + codProducto).disabled = true;
     }
   }
 }
 
-function comprar() {
+function ingresarDatosPago() {
   if (arrayProdVta.length != 0) {
     let areaForm = document.getElementById("AreaformPago");
 
@@ -152,7 +152,7 @@ function comprar() {
     <label for="cvv">Ingrese CVV de la tarjeta:</label>
     <input type="text" name="cvv"  />
 
-    <input type="submit" id="botonConfirmar" value="Comfirmar Compra" />
+    <input type="submit" id="botonConfirmar" value="Confirmar Compra" />
     <input type="reset" value="Borrar Datos" />`;
 
     ////añado el formulario
@@ -216,7 +216,7 @@ function confirmarCompra(e) {
     document.getElementById("formPago").remove();
     ///quito la lista de productos
     document.getElementById("listaCompraPendiente").innerHTML = "";
-    ///reactivo por el momento el boton de comprar
+    ///reactivo el boton de comprar
     document.getElementById("botonCompra").disabled = false;
   }
 }
@@ -252,5 +252,5 @@ visualizarProd(arrayProd);
 ///creo el evento de click para el boton de compra
 let botonCompra = document.getElementById("botonCompra");
 botonCompra.onclick = () => {
-  comprar();
+  ingresarDatosPago();
 };
