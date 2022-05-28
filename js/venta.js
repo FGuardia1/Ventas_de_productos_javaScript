@@ -1,32 +1,50 @@
-const navToggle = document.querySelector(".nav-toggle");
-const nav = document.querySelector(".nav");
-
-navToggle.addEventListener("click", () => {
-  nav.classList.toggle("nav--visible");
-});
-
-/////////Aqui empieza la logica para la venta de productos/////////
-
 //////Declaracion de variables globales///////
+
+//////////////Creo el array de productos
+const productos = [
+  {
+    id: 0,
+    nombre: "Mouse Redragon Griffin M607 RGB USB 7200DPI",
+    precio: 1730,
+    stock: 20,
+    imagenPath: "./images/Mouse.png",
+  },
+  {
+    id: 1,
+    nombre: "Memoria Patriot Viper Steel 8gb Ddr4 3200mhz",
+    precio: 4720,
+    stock: 10,
+    imagenPath: "./images/memoriaRam.png",
+  },
+  {
+    id: 2,
+    nombre: "Placa de Video Powercolor Radeon RX 550 Red Dragon 4GB GDDR5",
+    precio: 35500,
+    stock: 5,
+    imagenPath: "./images/placaVideo.png",
+  },
+];
+
 //array de todos los productos
-const arrayProd = [];
+let arrayProd;
+//array de todas las ventas registradas
+const arrayVentas = [];
 //array de lista de productos que se venderan(lista de compras)
-const arrayProdVta = [];
+const carritoDeCompra = [];
 
 ////secciones de la pagina donde se crearan/borraran elementos
 let seccionComprasRealizadas = document.getElementById("listaCompra");
 let seccionMuestrarioProd = document.getElementById("listaProductos");
-let seccionListadoProductoPendienteCompra = document.getElementById(
-  "listaCompraPendiente"
-);
+
 let seccionFormPago = document.getElementById("AreaformPago");
 ///elementos de la pagina
-let formularioPago;
+
 let listaCompraPendiente = document.getElementById("listaCompraPendiente");
 //////Declaracion de funciones//////
 
+//////funciones auxiliares
 function obtenerFechaActual() {
-  return new Date();
+  return new Date().toLocaleString("en-GB", { hour12: false });
 }
 
 function realizarPagoTarjeta(tarjeta) {
@@ -43,12 +61,12 @@ function crearObjetoTarjeta(formulario) {
   return tarjeta;
 }
 
-function crearObjetoVenta(listaCompra, nrotarjeta) {
+function crearObjetoVenta(nrotarjeta) {
   const venta = {
     fecha: obtenerFechaActual(),
-    listaDeCompra: listaCompra,
+    listaDeCompra: JSON.stringify(carritoDeCompra),
     nroDetarjeta: nrotarjeta,
-    total: listaCompra.reduce(
+    total: carritoDeCompra.reduce(
       (acumulador, producto) =>
         acumulador + producto.precio * producto.cantidad,
       0
@@ -58,12 +76,36 @@ function crearObjetoVenta(listaCompra, nrotarjeta) {
 }
 
 function vaciarArrayCompra() {
-  while (arrayProdVta.length > 0) arrayProdVta.pop();
+  while (carritoDeCompra.length > 0) carritoDeCompra.pop();
 }
 
+//////////funciones de uso de storage,local
+
+function obtenerProductosLocal() {
+  arrayProd = JSON.parse(localStorage.getItem("productos"));
+}
+
+function obtenerVentasLocal() {
+  if (JSON.parse(localStorage.getItem("ventas")) != null) {
+    for (const item of JSON.parse(localStorage.getItem("ventas"))) {
+      arrayVentas.push(item);
+    }
+  }
+}
+
+function guardarLocal(clave, valor) {
+  localStorage.setItem(clave, valor);
+}
+
+function agregarVenta(venta) {
+  arrayVentas.push(venta);
+  guardarLocal("ventas", JSON.stringify(arrayVentas));
+}
+
+///////////////defino la clase que va a manejar casi todas las funcionalidades de la pagina
 class PageHandler {
   descontarStock() {
-    for (const producto of arrayProdVta) {
+    for (const producto of carritoDeCompra) {
       arrayProd[producto.id].stock =
         arrayProd[producto.id].stock - producto.cantidad;
     }
@@ -85,7 +127,7 @@ class PageHandler {
   }
   obtenerListaCompra() {
     let listaCompra = "";
-    for (const producto of arrayProdVta) {
+    for (const producto of carritoDeCompra) {
       listaCompra =
         listaCompra +
         "\n" +
@@ -117,30 +159,53 @@ class PageHandler {
         <button class="articulo__boton-compra" id=boton${producto.id}>COMPRAR</button>`;
   }
 
-  obtenerHtmlCompraPendiente(productoVta) {
-    return ` <label>${productoVta.nombre}:</label>
-  <input type="text" id="textCant${productoVta.id}" placeholder="Ingrese cantidad" />
-  <input type="button" id="buttonCant${productoVta.id}" value="Añadir" />`;
+  obtenerHtmlIngresoCantidadCompra(productoVta) {
+    return `<input type="text" id="textCant${productoVta.id}" placeholder="Ingrese cantidad" />
+  <input type="button" id="buttonCant${productoVta.id}" value="Añadir" /><label id="labelEstadoItem${productoVta.id}"></label>`;
+  }
+  obtenerHtmlBotonCancelarCompra(codProducto) {
+    return `<input type="button" id="buttonCancelarCompra${codProducto}" value="Cancelar compra" />`;
   }
 
-  obtnerHtmlFormPago() {
+  obtenerHtmlFormPago() {
     return `  <label for="tarjeta">Ingrese nro de tarjeta:</label>
     <input type="text" name="tarjeta"  />
     <label for="titular">Ingrese titular de la tarjeta:</label>
     <input type="text" name="titular"  />
     <label for="cvv">Ingrese CVV de la tarjeta:</label>
     <input type="text" name="cvv"  />
-
+    <br>
     <input type="submit" id="botonConfirmar" value="Confirmar Compra" />
-    <input type="reset" value="Borrar Datos" />`;
+    <input type="reset" value="Borrar Datos" /><br>
+    <label id="avisoForm"></label>`;
   }
 
   obtenerValorInputText(id) {
     return document.getElementById(id).value;
   }
 
+  obtenerElementoHtmlId(id) {
+    return document.getElementById(id);
+  }
+
+  setValorLabel(id, mensaje) {
+    document.getElementById(id).innerHTML = mensaje;
+  }
+
   inhabilitarBotonCompra(modo) {
     document.getElementById("botonCompra").disabled = modo;
+  }
+
+  inhabilitarButtonEinputText(codProducto) {
+    //oculto el boton de confirmacion de item de compra pendiente
+    document.getElementById("buttonCant" + codProducto).style.visibility =
+      "hidden";
+    ///inhabilito la caja de texto donde se ingreso la cantidad de la compra pendiente
+    document.getElementById("textCant" + codProducto).disabled = true;
+  }
+
+  quitarElementoApagina(id) {
+    document.getElementById(id).remove();
   }
 
   agregarElementoApagina(
@@ -182,78 +247,129 @@ class PageHandler {
         "div",
         seccionMuestrarioProd,
         HTMLhijo,
-        "articulo"
+        "articulo",
+        "producto" + producto.id
       );
       ///creo el evento de click para el boton de cada producto que se visualizara, le envio el id del producto a la funcion
       this.crearEvento(
         "boton" + producto.id,
-        this.enlistarProductoPendienteCompra.bind(this),
+        this.ingresoCantidadCompra.bind(this),
         producto.id
       );
     }
   }
 
-  enlistarProductoPendienteCompra(codProducto) {
-    let productoVta = arrayProd[codProducto];
-    let HTMLitemCompraPendiente = this.obtenerHtmlCompraPendiente(productoVta);
-    this.agregarElementoApagina(
-      "div",
-      seccionListadoProductoPendienteCompra,
-      HTMLitemCompraPendiente,
-      "compraPendiente__item"
-    );
-    this.crearEvento(
-      "buttonCant" + productoVta.id,
-      this.confirmarProducto.bind(this),
-      productoVta.id
-    );
+  ingresoCantidadCompra(codProducto) {
+    //Verifico que los elementos de ingreso de cantidad no existan actualmente
+    if (this.obtenerElementoHtmlId("ingresoCantProd" + codProducto) == null) {
+      let productoVta = arrayProd[codProducto];
+      let HTMLitemCompraPendiente =
+        this.obtenerHtmlIngresoCantidadCompra(productoVta);
+
+      ////creo los elementos html(input text, boton) para poder ingresar la cantidad a comprar
+      this.agregarElementoApagina(
+        "div",
+        this.obtenerElementoHtmlId("producto" + codProducto),
+        HTMLitemCompraPendiente,
+        "compraPendiente__item",
+        "ingresoCantProd" + productoVta.id
+      );
+
+      ////Creo el evento del boton para confirmar la cantidad a comprar
+      this.crearEvento(
+        "buttonCant" + productoVta.id,
+        this.confirmarProducto.bind(this),
+        productoVta.id
+      );
+    }
   }
 
   confirmarProducto(codProducto) {
+    //obtengo el valor ingresado en el input text de ingreso de cantidad
     let cantidad = this.obtenerValorInputText("textCant" + codProducto);
     ///selecciona el producto por el codigo
     let productoVta = arrayProd[codProducto];
-
+    //verifico que lo ingresado sea un numero valido
     if (!this.validarDatos(cantidad)) {
-      alert("Datos ingresados no validos");
+      this.setValorLabel("labelEstadoItem" + productoVta.id, "Ingreso erroneo");
     } else {
       ///verifico que el stock actual del producto alcance a cubrir la cantidad pedida
       if (!this.verificarStock(productoVta, cantidad)) {
-        alert("No hay suficiente stock");
+        this.setValorLabel(
+          "labelEstadoItem" + productoVta.id,
+          "No hay suficiente stock"
+        );
       } else {
         ////Añado el producto a la lista de productos a comprar
-        this.agregarItemDeCompra(productoVta, cantidad);
-        alert("Producto añadido a la lista");
+        this.agregarItemDeCompraAlCarrito(productoVta, cantidad);
+        //aviso que se agrego al carrito de compras
+        this.setValorLabel(
+          "labelEstadoItem" + productoVta.id,
+          "Producto añadido a la lista"
+        );
+
         ////desactivo la visibilidad del boton que acciono el evento, para no volver a usarlo e
         ///inhabilito la caja de texto donde se ingreso la cantidad
         this.inhabilitarButtonEinputText(codProducto);
+        //creo un boton para poder quitar el item del carrito
+        this.crearBotonCancelarCompra(codProducto);
       }
     }
   }
 
-  inhabilitarButtonEinputText(codProducto) {
-    //oculto el boton de confirmacion de item de compra pendiente
-    document.getElementById("buttonCant" + codProducto).style.visibility =
-      "hidden";
-    ///inhabilito la caja de texto donde se ingreso la cantidad de la compra pendiente
-    document.getElementById("textCant" + codProducto).disabled = true;
-  }
-
-  agregarItemDeCompra(productoVta, cantidad) {
+  agregarItemDeCompraAlCarrito(productoVta, cantidad) {
     const itemCompra = {
       id: productoVta.id,
       nombre: productoVta.nombre,
       precio: productoVta.precio,
       cantidad: cantidad,
     };
-    arrayProdVta.push(itemCompra);
+    carritoDeCompra.push(itemCompra);
+  }
+
+  crearBotonCancelarCompra(codProducto) {
+    //obtengo el elemento html que contiene los elementos de ingreso de cantidad de producto
+    let contenedorIngresoCantidad = this.obtenerElementoHtmlId(
+      "ingresoCantProd" + codProducto
+    );
+    let HTMLBotonCancelarCompra =
+      this.obtenerHtmlBotonCancelarCompra(codProducto);
+    this.agregarElementoApagina(
+      "div",
+      contenedorIngresoCantidad,
+      HTMLBotonCancelarCompra,
+      ""
+    );
+    ///Creo el evento del boton para cancelar la compra
+    this.crearEvento(
+      "buttonCancelarCompra" + codProducto,
+      this.cancelarCompraProducto.bind(this),
+      codProducto
+    );
+  }
+
+  cancelarCompraProducto(codProducto) {
+    ///quita los elementos de ingreso de cantidad
+    this.quitarElementoApagina("ingresoCantProd" + codProducto);
+    ///quitar producto de carrito de compra
+    this.quitarDeCarritoCompra(codProducto);
+  }
+
+  quitarDeCarritoCompra(codProducto) {
+    //obtengo el indice del producto en el array de carrito de compra, buscando el id
+    let indiceElemento = carritoDeCompra.indexOf(
+      carritoDeCompra.find((producto) => producto.id === codProducto)
+    );
+    //quito el elemento
+    carritoDeCompra.splice(indiceElemento, 1);
   }
 
   ingresarDatosPago() {
     //verifico que la lista de compras no este vacia
-    if (arrayProdVta.length != 0) {
-      let htmlFormPago = this.obtnerHtmlFormPago();
-
+    if (carritoDeCompra.length != 0) {
+      let htmlFormPago = this.obtenerHtmlFormPago();
+      ///
+      let formularioPago;
       ////añado el formulario
       this.agregarElementoApagina(
         "form",
@@ -277,78 +393,85 @@ class PageHandler {
     elemento.addEventListener("submit", accion);
   }
 
+  verificarDatosForm(formulario) {
+    if (
+      formulario.children[1].value == "" ||
+      formulario.children[3].value == "" ||
+      formulario.children[5].value == ""
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  mostrarMensajeForm() {}
+
   confirmarCompra(e) {
     e.preventDefault();
     //Obtenemos el elemento desde el cual se disparó el evento
     let formulario = e.target;
-    ///crea el objeto tarjeta
-    const tarjeta = crearObjetoTarjeta(formulario);
-    ////realiza el pago por tarjeta, devuelve true si pudo, sino false
-    if (!realizarPagoTarjeta(tarjeta)) {
-      alert("No se pudo realizar el pago");
+    if (!this.verificarDatosForm(formulario)) {
+      ///aviso que los valores ingresados son erroneos por el label de aviso del formulario
+      this.setValorLabel("avisoForm", "Datos Ingresados no validos");
     } else {
-      const venta = crearObjetoVenta(arrayProdVta, tarjeta.nroTarjeta);
-      ///una vez registrada la compra hago el descuento de stock al/los producto/s correspondiente/
-      this.descontarStock();
-      /////informo que la venta se realizo exitosamente
-      this.visualizarListaDecompra(venta);
-      ///reseteo el estado visual de la pagina y vacio la lista de compras pendientes
-      this.resetearEstadoCompra();
+      ///crea el objeto tarjeta
+      const tarjeta = crearObjetoTarjeta(formulario);
+      ////realiza el pago por tarjeta, devuelve true si pudo, sino false
+      if (!realizarPagoTarjeta(tarjeta)) {
+        this.setValorLabel("avisoForm", "No se pudo realizar el pago");
+      } else {
+        const venta = crearObjetoVenta(tarjeta.nroTarjeta);
+        ///una vez registrada la compra hago el descuento de stock al/los producto/s correspondiente/
+        this.descontarStock();
+        /////informo que la venta se realizo exitosamente
+        this.visualizarListaDecompra(venta);
+        ///reseteo el estado visual de la pagina y vacio la lista de compras pendientes
+        this.resetearEstadoCompra();
+        ///guardo los cambios de stock a la copia en local
+        guardarLocal("productos", JSON.stringify(arrayProd));
+        ///registro la venta en el array de ventas y en local
+        agregarVenta(venta);
+      }
     }
   }
 
   resetearEstadoCompra() {
-    ////vacio el array de compra
-    vaciarArrayCompra();
+    ///quito los ingresos de cantidades de todos los productos del carrito de compras
+    this.quitarIngresoCantTodos();
     ///quito el form de pago
     this.quitarFormPago();
-    ///quito la lista de productos
-    this.vaciarListaCompra();
+    ////vacio el array de compra
+    vaciarArrayCompra();
+
     ///reactivo el boton de comprar
     this.inhabilitarBotonCompra(false);
   }
 
-  quitarFormPago() {
-    formularioPago.remove();
+  quitarIngresoCantTodos() {
+    for (const prod of carritoDeCompra) {
+      this.quitarElementoApagina("ingresoCantProd" + prod.id);
+    }
   }
-  vaciarListaCompra() {
-    listaCompraPendiente.innerHTML = "";
+
+  quitarFormPago() {
+    this.quitarElementoApagina("formPago");
   }
 }
 
-//////////////Creo los productos
+/////////////////////A partir de aqui se ejecuta el codigo al cargarse la pagina
 
-const producto1 = {
-  id: 0,
-  nombre: "Mouse Redragon Griffin M607 RGB USB 7200DPI",
-  precio: 1730,
-  stock: 20,
-  imagenPath: "./images/Mouse.png",
-};
-
-const producto2 = {
-  id: 1,
-  nombre: "Memoria Patriot Viper Steel 8gb Ddr4 3200mhz",
-  precio: 4720,
-  stock: 10,
-  imagenPath: "./images/memoriaRam.png",
-};
-
-const producto3 = {
-  id: 2,
-  nombre: "Placa de Video Powercolor Radeon RX 550 Red Dragon 4GB GDDR5",
-  precio: 35500,
-  stock: 5,
-  imagenPath: "./images/placaVideo.png",
-};
-
-////Agrego los productos al array de productos
-arrayProd.push(producto1, producto2, producto3);
-
-///Creo mi objeto que va a gestionar la pagina
+////////////Creo mi objeto que va a gestionar la pagina
 let MiPageHandler = new PageHandler();
 
+///Guardo el array de productos en local, luego de ejecutarse una vez, se puede dejar comentada la linea
+guardarLocal("productos", JSON.stringify(productos));
+
+///Obtiene el array de productos guardados en local y lo asigna a la variable de productos del script
+obtenerProductosLocal();
+///Obtiene las ventas hechas,
+obtenerVentasLocal();
 ////visualizo todos los productos que estan en el array en la pagina web
 MiPageHandler.visualizarProd();
-MiPageHandler.crearEventoBotonCompra();
 ///creo el evento de click para el boton de compra
+MiPageHandler.crearEventoBotonCompra();
