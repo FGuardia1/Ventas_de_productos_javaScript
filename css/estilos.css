@@ -180,6 +180,12 @@ body {
   font-size: 25px;
 }
 
+.seccionCarritoCompra {
+  padding: 5px;
+  text-align: left;
+  font-size: 22px;
+}
+
 header {
   background: linear-gradient(to right, #4458c9, #061b5e);
   padding: 0.5rem 0;

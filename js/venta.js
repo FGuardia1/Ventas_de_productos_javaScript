@@ -35,7 +35,7 @@ const carritoDeCompra = [];
 ////secciones de la pagina donde se crearan/borraran elementos
 let seccionComprasRealizadas = document.getElementById("listaCompra");
 let seccionMuestrarioProd = document.getElementById("listaProductos");
-
+let seccionCarritoCompra = document.getElementById("carritoCompra");
 let seccionFormPago = document.getElementById("AreaformPago");
 ///elementos de la pagina
 
@@ -120,10 +120,10 @@ class PageHandler {
     }
     return false;
   }
-  obtenerListaCompra() {
+  obtenerListaCarrito() {
     let listaCompra = "";
     for (const producto of carritoDeCompra) {
-      listaCompra = listaCompra + "\n" + producto.id + "-" + producto.nombre + " cantidad:" + producto.cantidad;
+      listaCompra = listaCompra + "\n" + producto.nombre + ", $" + producto.precio + " cantidad:" + producto.cantidad;
     }
     return listaCompra;
   }
@@ -131,11 +131,17 @@ class PageHandler {
     let parrafo = document.createElement("p");
     parrafo.innerText =
       "Se compro con exito:" +
-      this.obtenerListaCompra() +
+      this.obtenerListaCarrito() +
       "\n  por un precio total de $" +
       venta.total +
       "\n Puede pasar a retirar su compra por cualquiera de nuestras sucursales ";
     seccionComprasRealizadas.innerHTML = parrafo.innerHTML;
+  }
+
+  visualizarCarrito() {
+    let parrafo = document.createElement("p");
+    parrafo.innerText = "Carrito actual:" + this.obtenerListaCarrito();
+    seccionCarritoCompra.innerHTML = parrafo.innerHTML;
   }
 
   obtenerHtmlproducto(producto) {
@@ -192,7 +198,10 @@ class PageHandler {
   }
 
   quitarElementoApagina(id) {
-    document.getElementById(id).remove();
+    let elemento = document.getElementById(id);
+    if (elemento != null) {
+      elemento.remove();
+    }
   }
 
   agregarElementoApagina(tipoElemento, elementoPadre, htmlHijo, claseHijo, idHijo) {
@@ -302,6 +311,7 @@ class PageHandler {
       cantidad: cantidad,
     };
     carritoDeCompra.push(itemCompra);
+    this.visualizarCarrito();
   }
 
   crearBotonCancelarCompra(codProducto) {
@@ -318,6 +328,7 @@ class PageHandler {
     this.quitarElementoApagina("ingresoCantProd" + codProducto);
     ///quitar producto de carrito de compra
     this.quitarDeCarritoCompra(codProducto);
+    this.visualizarCarrito();
   }
 
   quitarDeCarritoCompra(codProducto) {
@@ -393,7 +404,7 @@ class PageHandler {
     this.quitarFormPago();
     ////vacio el array de compra
     vaciarArrayCompra();
-
+    this.visualizarCarrito();
     ///reactivo el boton de comprar
     this.inhabilitarBotonCompra(false);
   }
