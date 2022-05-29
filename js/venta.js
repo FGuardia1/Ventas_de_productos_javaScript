@@ -66,11 +66,7 @@ function crearObjetoVenta(nrotarjeta) {
     fecha: obtenerFechaActual(),
     listaDeCompra: JSON.stringify(carritoDeCompra),
     nroDetarjeta: nrotarjeta,
-    total: carritoDeCompra.reduce(
-      (acumulador, producto) =>
-        acumulador + producto.precio * producto.cantidad,
-      0
-    ),
+    total: carritoDeCompra.reduce((acumulador, producto) => acumulador + producto.precio * producto.cantidad, 0),
   };
   return venta;
 }
@@ -106,8 +102,7 @@ function agregarVenta(venta) {
 class PageHandler {
   descontarStock() {
     for (const producto of carritoDeCompra) {
-      arrayProd[producto.id].stock =
-        arrayProd[producto.id].stock - producto.cantidad;
+      arrayProd[producto.id].stock = arrayProd[producto.id].stock - producto.cantidad;
     }
   }
 
@@ -128,14 +123,7 @@ class PageHandler {
   obtenerListaCompra() {
     let listaCompra = "";
     for (const producto of carritoDeCompra) {
-      listaCompra =
-        listaCompra +
-        "\n" +
-        producto.id +
-        "-" +
-        producto.nombre +
-        " cantidad:" +
-        producto.cantidad;
+      listaCompra = listaCompra + "\n" + producto.id + "-" + producto.nombre + " cantidad:" + producto.cantidad;
     }
     return listaCompra;
   }
@@ -198,8 +186,7 @@ class PageHandler {
 
   inhabilitarButtonEinputText(codProducto) {
     //oculto el boton de confirmacion de item de compra pendiente
-    document.getElementById("buttonCant" + codProducto).style.visibility =
-      "hidden";
+    document.getElementById("buttonCant" + codProducto).style.visibility = "hidden";
     ///inhabilito la caja de texto donde se ingreso la cantidad de la compra pendiente
     document.getElementById("textCant" + codProducto).disabled = true;
   }
@@ -208,13 +195,7 @@ class PageHandler {
     document.getElementById(id).remove();
   }
 
-  agregarElementoApagina(
-    tipoElemento,
-    elementoPadre,
-    htmlHijo,
-    claseHijo,
-    idHijo
-  ) {
+  agregarElementoApagina(tipoElemento, elementoPadre, htmlHijo, claseHijo, idHijo) {
     let hijo = document.createElement(tipoElemento);
     hijo.innerHTML = htmlHijo;
     hijo.className = claseHijo;
@@ -224,11 +205,28 @@ class PageHandler {
 
     elementoPadre.appendChild(hijo);
   }
-  crearEventoBotonCompra() {
-    let elemento = document.getElementById("botonCompra");
-    elemento.onclick = () => {
-      this.ingresarDatosPago();
-    };
+  crearEventoBoton(idElemento) {
+    let elemento = document.getElementById(idElemento);
+
+    if (idElemento == "botonCompra") {
+      elemento.onclick = () => {
+        this.ingresarDatosPago();
+      };
+    } else {
+      elemento.onclick = () => {
+        this.buscarProductoNombre();
+      };
+    }
+  }
+
+  buscarProductoNombre() {
+    //vacio el muestrario para luego llenarlo del resultado de busqueda
+    seccionMuestrarioProd.innerHTML = "";
+
+    let str = this.obtenerValorInputText("buscadorInput");
+    const resultado = arrayProd.filter((el) => el.nombre.toLowerCase().includes(str.toLowerCase()));
+    //visualizo el array de productos luego del filtro
+    this.visualizarProd(resultado);
   }
 
   crearEvento(idElemento, accion, parametroAccion) {
@@ -239,23 +237,13 @@ class PageHandler {
     };
   }
 
-  visualizarProd() {
-    for (const producto of arrayProd) {
+  visualizarProd(arrayProdMostrar) {
+    for (const producto of arrayProdMostrar) {
       let HTMLhijo = this.obtenerHtmlproducto(producto);
       ////agrego cada producto a la pagina, con articulo como la clase de cada nuevo elemento(producto)
-      this.agregarElementoApagina(
-        "div",
-        seccionMuestrarioProd,
-        HTMLhijo,
-        "articulo",
-        "producto" + producto.id
-      );
+      this.agregarElementoApagina("div", seccionMuestrarioProd, HTMLhijo, "articulo", "producto" + producto.id);
       ///creo el evento de click para el boton de cada producto que se visualizara, le envio el id del producto a la funcion
-      this.crearEvento(
-        "boton" + producto.id,
-        this.ingresoCantidadCompra.bind(this),
-        producto.id
-      );
+      this.crearEvento("boton" + producto.id, this.ingresoCantidadCompra.bind(this), producto.id);
     }
   }
 
@@ -263,8 +251,7 @@ class PageHandler {
     //Verifico que los elementos de ingreso de cantidad no existan actualmente
     if (this.obtenerElementoHtmlId("ingresoCantProd" + codProducto) == null) {
       let productoVta = arrayProd[codProducto];
-      let HTMLitemCompraPendiente =
-        this.obtenerHtmlIngresoCantidadCompra(productoVta);
+      let HTMLitemCompraPendiente = this.obtenerHtmlIngresoCantidadCompra(productoVta);
 
       ////creo los elementos html(input text, boton) para poder ingresar la cantidad a comprar
       this.agregarElementoApagina(
@@ -276,11 +263,7 @@ class PageHandler {
       );
 
       ////Creo el evento del boton para confirmar la cantidad a comprar
-      this.crearEvento(
-        "buttonCant" + productoVta.id,
-        this.confirmarProducto.bind(this),
-        productoVta.id
-      );
+      this.crearEvento("buttonCant" + productoVta.id, this.confirmarProducto.bind(this), productoVta.id);
     }
   }
 
@@ -295,18 +278,12 @@ class PageHandler {
     } else {
       ///verifico que el stock actual del producto alcance a cubrir la cantidad pedida
       if (!this.verificarStock(productoVta, cantidad)) {
-        this.setValorLabel(
-          "labelEstadoItem" + productoVta.id,
-          "No hay suficiente stock"
-        );
+        this.setValorLabel("labelEstadoItem" + productoVta.id, "No hay suficiente stock");
       } else {
         ////Añado el producto a la lista de productos a comprar
         this.agregarItemDeCompraAlCarrito(productoVta, cantidad);
         //aviso que se agrego al carrito de compras
-        this.setValorLabel(
-          "labelEstadoItem" + productoVta.id,
-          "Producto añadido a la lista"
-        );
+        this.setValorLabel("labelEstadoItem" + productoVta.id, "Producto añadido a la lista");
 
         ////desactivo la visibilidad del boton que acciono el evento, para no volver a usarlo e
         ///inhabilito la caja de texto donde se ingreso la cantidad
@@ -329,23 +306,11 @@ class PageHandler {
 
   crearBotonCancelarCompra(codProducto) {
     //obtengo el elemento html que contiene los elementos de ingreso de cantidad de producto
-    let contenedorIngresoCantidad = this.obtenerElementoHtmlId(
-      "ingresoCantProd" + codProducto
-    );
-    let HTMLBotonCancelarCompra =
-      this.obtenerHtmlBotonCancelarCompra(codProducto);
-    this.agregarElementoApagina(
-      "div",
-      contenedorIngresoCantidad,
-      HTMLBotonCancelarCompra,
-      ""
-    );
+    let contenedorIngresoCantidad = this.obtenerElementoHtmlId("ingresoCantProd" + codProducto);
+    let HTMLBotonCancelarCompra = this.obtenerHtmlBotonCancelarCompra(codProducto);
+    this.agregarElementoApagina("div", contenedorIngresoCantidad, HTMLBotonCancelarCompra, "");
     ///Creo el evento del boton para cancelar la compra
-    this.crearEvento(
-      "buttonCancelarCompra" + codProducto,
-      this.cancelarCompraProducto.bind(this),
-      codProducto
-    );
+    this.crearEvento("buttonCancelarCompra" + codProducto, this.cancelarCompraProducto.bind(this), codProducto);
   }
 
   cancelarCompraProducto(codProducto) {
@@ -357,9 +322,7 @@ class PageHandler {
 
   quitarDeCarritoCompra(codProducto) {
     //obtengo el indice del producto en el array de carrito de compra, buscando el id
-    let indiceElemento = carritoDeCompra.indexOf(
-      carritoDeCompra.find((producto) => producto.id === codProducto)
-    );
+    let indiceElemento = carritoDeCompra.indexOf(carritoDeCompra.find((producto) => producto.id === codProducto));
     //quito el elemento
     carritoDeCompra.splice(indiceElemento, 1);
   }
@@ -371,19 +334,10 @@ class PageHandler {
       ///
       let formularioPago;
       ////añado el formulario
-      this.agregarElementoApagina(
-        "form",
-        seccionFormPago,
-        htmlFormPago,
-        "",
-        "formPago"
-      );
+      this.agregarElementoApagina("form", seccionFormPago, htmlFormPago, "", "formPago");
       formularioPago = document.getElementById("formPago");
       ///creo el evento submit
-      this.crearEventoSubmitFormPago(
-        formularioPago,
-        this.confirmarCompra.bind(this)
-      );
+      this.crearEventoSubmitFormPago(formularioPago, this.confirmarCompra.bind(this));
       ///desactivo por el momento el boton de comprar
       this.inhabilitarBotonCompra(true);
     }
@@ -394,11 +348,7 @@ class PageHandler {
   }
 
   verificarDatosForm(formulario) {
-    if (
-      formulario.children[1].value == "" ||
-      formulario.children[3].value == "" ||
-      formulario.children[5].value == ""
-    ) {
+    if (formulario.children[1].value == "" || formulario.children[3].value == "" || formulario.children[5].value == "") {
       return false;
     } else {
       return true;
@@ -472,6 +422,8 @@ obtenerProductosLocal();
 ///Obtiene las ventas hechas,
 obtenerVentasLocal();
 ////visualizo todos los productos que estan en el array en la pagina web
-MiPageHandler.visualizarProd();
+MiPageHandler.visualizarProd(arrayProd);
 ///creo el evento de click para el boton de compra
-MiPageHandler.crearEventoBotonCompra();
+MiPageHandler.crearEventoBoton("botonCompra");
+///creo el evento de click para el boton de busqueda
+MiPageHandler.crearEventoBoton("botonBuscar");
