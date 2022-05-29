@@ -23,6 +23,27 @@ const productos = [
     stock: 5,
     imagenPath: "./images/placaVideo.png",
   },
+  {
+    id: 3,
+    nombre: "Mouse Razer Viper 8KHZ AMBIDEXTROUS WIRED USB",
+    precio: 8500,
+    stock: 8,
+    imagenPath: "./images/mouse2.png",
+  },
+  {
+    id: 4,
+    nombre: "Mouse Logitech G203 Gaming Lightsync RGB Blue 8000 DPI",
+    precio: 2800,
+    stock: 5,
+    imagenPath: "./images/mouse3.png",
+  },
+  {
+    id: 5,
+    nombre: "Placa de Video Powercolor AMD BC-2235 10GB GDDR6 40Mh/s Bulk",
+    precio: 85000,
+    stock: 6,
+    imagenPath: "./images/placaVideo2.png",
+  },
 ];
 
 //array de todos los productos

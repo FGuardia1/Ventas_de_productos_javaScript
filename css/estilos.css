@@ -63,7 +63,7 @@ body {
   flex-direction: column;
   border: 1px solid black;
   border-radius: 1rem;
-  padding: 2rem;
+  padding: 1rem;
 }
 
 .articulo__nombre {
@@ -71,27 +71,25 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 25px;
+  font-size: 20px;
   text-decoration: wavy;
-  height: 130px;
+  height: 100px;
 }
 
 .articulo__precio {
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 5px;
+  margin-bottom: 2px;
   text-align: center;
-  font-size: 25px;
-}
-
-.articulo__caracteristicas {
-  margin: 10px 10px;
+  font-size: 22px;
 }
 
 .articulo__imagen {
   margin-bottom: 10px;
   order: -1;
   align-self: center;
-  max-width: 250px;
+  max-width: 220px;
+  max-height: 220px;
   border-radius: 1rem;
   overflow: hidden;
 }
