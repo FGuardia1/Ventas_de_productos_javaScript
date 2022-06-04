@@ -49,12 +49,12 @@ const productos = [
 //array de todos los productos
 let arrayProd;
 //array de todas las ventas registradas
-const arrayVentas = [];
+let arrayVentas = [];
 //array de lista de productos que se venderan(lista de compras)
 const carritoDeCompra = [];
 
 ////secciones de la pagina donde se crearan/borraran elementos
-let seccionComprasRealizadas = document.getElementById("listaCompra");
+
 let seccionMuestrarioProd = document.getElementById("listaProductos");
 let seccionCarritoCompra = document.getElementById("carritoCompra");
 let seccionFormPago = document.getElementById("AreaformPago");
@@ -103,11 +103,8 @@ function obtenerProductosLocal() {
 }
 
 function obtenerVentasLocal() {
-  if (JSON.parse(localStorage.getItem("ventas")) != null) {
-    for (const item of JSON.parse(localStorage.getItem("ventas"))) {
-      arrayVentas.push(item);
-    }
-  }
+  //uso el operador logico or para simplificar la asignacion del array de ventas o la inicializacion del mismo
+  arrayVentas = JSON.parse(localStorage.getItem("ventas")) || [];
 }
 
 function guardarLocal(clave, valor) {
@@ -127,20 +124,14 @@ class PageHandler {
     }
   }
 
-  verificarStock(producto, cantidad) {
-    if (producto.stock >= cantidad) {
-      return true;
-    } else {
-      return false;
-    }
+  verificarStock({ stock: productoStock }, cantidad) {
+    return productoStock >= cantidad ? true : false;
   }
 
   validarDatos(cantidad) {
-    if (cantidad > 0) {
-      return true;
-    }
-    return false;
+    return cantidad > 0 ? true : false;
   }
+
   obtenerListaCarrito() {
     let listaCompra = "";
     for (const producto of carritoDeCompra) {
@@ -148,15 +139,44 @@ class PageHandler {
     }
     return listaCompra;
   }
-  visualizarListaDecompra(venta) {
-    let parrafo = document.createElement("p");
-    parrafo.innerText =
-      "Se compro con exito:" +
-      this.obtenerListaCarrito() +
-      "\n  por un precio total de $" +
-      venta.total +
-      "\n Puede pasar a retirar su compra por cualquiera de nuestras sucursales ";
-    seccionComprasRealizadas.innerHTML = parrafo.innerHTML;
+  msgCompraExitosa({ total: totalVenta }) {
+    Swal.fire({
+      title: "Se registro su compra",
+      text:
+        "El total de su compra es: $" + totalVenta + ". Puede pasar a retirar su compra por cualquiera de nuestras sucursales ",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
+  }
+
+  msgFallo(msg) {
+    Toastify({
+      text: msg,
+      duration: 3000,
+      close: true,
+      gravity: "bottom", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      style: {
+        background: "linear-gradient(to right, #db0b0b,#990f0f)",
+        width: "300px",
+      },
+    }).showToast();
+  }
+
+  msgSuccess(msg) {
+    Toastify({
+      text: msg,
+      duration: 3000,
+      close: true,
+      gravity: "bottom", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      stopOnFocus: true, // Prevents dismissing of toast on hover
+      style: {
+        background: "linear-gradient(to right, #00b09b, #96c93d)",
+        width: "300px",
+      },
+    }).showToast();
   }
 
   visualizarCarrito() {
@@ -304,16 +324,16 @@ class PageHandler {
     let productoVta = arrayProd[codProducto];
     //verifico que lo ingresado sea un numero valido
     if (!this.validarDatos(cantidad)) {
-      this.setValorLabel("labelEstadoItem" + productoVta.id, "Ingreso erroneo");
+      this.msgFallo("Ingreso erroneo");
     } else {
       ///verifico que el stock actual del producto alcance a cubrir la cantidad pedida
       if (!this.verificarStock(productoVta, cantidad)) {
-        this.setValorLabel("labelEstadoItem" + productoVta.id, "No hay suficiente stock");
+        this.msgFallo("Stock insuficiente");
       } else {
         ////Añado el producto a la lista de productos a comprar
         this.agregarItemDeCompraAlCarrito(productoVta, cantidad);
         //aviso que se agrego al carrito de compras
-        this.setValorLabel("labelEstadoItem" + productoVta.id, "Producto añadido a la lista");
+        this.msgSuccess("Producto añadido al carrito");
 
         ////desactivo la visibilidad del boton que acciono el evento, para no volver a usarlo e
         ///inhabilito la caja de texto donde se ingreso la cantidad
@@ -324,11 +344,11 @@ class PageHandler {
     }
   }
 
-  agregarItemDeCompraAlCarrito(productoVta, cantidad) {
+  agregarItemDeCompraAlCarrito({ id: prodId, nombre: prodNombre, precio: prodPrecio }, cantidad) {
     const itemCompra = {
-      id: productoVta.id,
-      nombre: productoVta.nombre,
-      precio: productoVta.precio,
+      id: prodId,
+      nombre: prodNombre,
+      precio: prodPrecio,
       cantidad: cantidad,
     };
     carritoDeCompra.push(itemCompra);
@@ -347,6 +367,8 @@ class PageHandler {
   cancelarCompraProducto(codProducto) {
     ///quita los elementos de ingreso de cantidad
     this.quitarElementoApagina("ingresoCantProd" + codProducto);
+    ///aviso que se quito del carrito
+    this.msgSuccess("Se retiro de carrito");
     ///quitar producto de carrito de compra
     this.quitarDeCarritoCompra(codProducto);
     this.visualizarCarrito();
@@ -380,11 +402,9 @@ class PageHandler {
   }
 
   verificarDatosForm(formulario) {
-    if (formulario.children[1].value == "" || formulario.children[3].value == "" || formulario.children[5].value == "") {
-      return false;
-    } else {
-      return true;
-    }
+    return formulario.children[1].value == "" || formulario.children[3].value == "" || formulario.children[5].value == ""
+      ? false
+      : true;
   }
 
   mostrarMensajeForm() {}
@@ -395,19 +415,19 @@ class PageHandler {
     let formulario = e.target;
     if (!this.verificarDatosForm(formulario)) {
       ///aviso que los valores ingresados son erroneos por el label de aviso del formulario
-      this.setValorLabel("avisoForm", "Datos Ingresados no validos");
+      this.msgFallo("Datos Ingresados no validos");
     } else {
       ///crea el objeto tarjeta
       const tarjeta = crearObjetoTarjeta(formulario);
       ////realiza el pago por tarjeta, devuelve true si pudo, sino false
       if (!realizarPagoTarjeta(tarjeta)) {
-        this.setValorLabel("avisoForm", "No se pudo realizar el pago");
+        this.msgFallo("No se pudo realizar el pago");
       } else {
         const venta = crearObjetoVenta(tarjeta.nroTarjeta);
         ///una vez registrada la compra hago el descuento de stock al/los producto/s correspondiente/
         this.descontarStock();
         /////informo que la venta se realizo exitosamente
-        this.visualizarListaDecompra(venta);
+        this.msgCompraExitosa(venta);
         ///reseteo el estado visual de la pagina y vacio la lista de compras pendientes
         this.resetearEstadoCompra();
         ///guardo los cambios de stock a la copia en local
