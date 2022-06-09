@@ -78,8 +78,23 @@ function crearListeners() {
 }
 
 //////Declaracion de funciones//////
+//////////funciones de uso de storage,local
+function obtenerProductosLocal() {
+  arrayProd = JSON.parse(localStorage.getItem("productos"));
+}
+function obtenerVentasLocal() {
+  //uso el operador logico or para simplificar la asignacion del array de ventas o la inicializacion del mismo
+  arrayVentas = JSON.parse(localStorage.getItem("ventas")) || [];
+}
+function guardarLocal(clave, valor) {
+  localStorage.setItem(clave, valor);
+}
+function agregarVenta(venta) {
+  arrayVentas.push(venta);
+  guardarLocal("ventas", JSON.stringify(arrayVentas));
+}
 
-//////funciones auxiliares
+///funciones////////
 function obtenerFechaActual() {
   return new Date().toLocaleString("en-GB", { hour12: false });
 }
@@ -106,29 +121,6 @@ function crearObjetoVenta(nrotarjeta) {
     total: carritoDeCompra.reduce((acumulador, producto) => acumulador + producto.precio * producto.cantidad, 0),
   };
   return venta;
-}
-
-function vaciarCarritoCompra() {
-  while (carritoDeCompra.length > 0) carritoDeCompra.pop();
-  while (seccionCarritoCompra.firstChild) {
-    seccionCarritoCompra.removeChild(seccionCarritoCompra.firstChild);
-  }
-}
-
-//////////funciones de uso de storage,local
-function obtenerProductosLocal() {
-  arrayProd = JSON.parse(localStorage.getItem("productos"));
-}
-function obtenerVentasLocal() {
-  //uso el operador logico or para simplificar la asignacion del array de ventas o la inicializacion del mismo
-  arrayVentas = JSON.parse(localStorage.getItem("ventas")) || [];
-}
-function guardarLocal(clave, valor) {
-  localStorage.setItem(clave, valor);
-}
-function agregarVenta(venta) {
-  arrayVentas.push(venta);
-  guardarLocal("ventas", JSON.stringify(arrayVentas));
 }
 
 function descontarStock() {
@@ -190,6 +182,14 @@ function inhabilitarBotonCompra(modo) {
 function quitarElementoApagina(elemento) {
   elemento.remove();
 }
+function mostrarElemento(elemento) {
+  elemento.classList.remove("oculto");
+  elemento.classList.add("visible");
+}
+function ocultarElemento(elemento) {
+  elemento.classList.remove("visible");
+  elemento.classList.add("oculto");
+}
 
 function mostrarCajaIngresoCantidad(e) {
   e.preventDefault();
@@ -201,24 +201,6 @@ function mostrarCajaIngresoCantidad(e) {
     let elemIngresarCant = productoSelecionado.querySelector(".cantidadCompra");
     mostrarElemento(elemIngresarCant);
   }
-}
-/*
- function buscarProductoNombre() {
-    //vacio el muestrario para luego llenarlo del resultado de busqueda
-    seccionMuestrarioProd.innerHTML = "";
-    let str = this.obtenerValorInputText("buscadorInput");
-    const resultado = arrayProd.filter((el) => el.nombre.toLowerCase().includes(str.toLowerCase()));
-    //visualizo el array de productos luego del filtro
-    this.visualizarProd(resultado);
-  }
-*/
-function mostrarElemento(elemento) {
-  elemento.classList.remove("oculto");
-  elemento.classList.add("visible");
-}
-function ocultarElemento(elemento) {
-  elemento.classList.remove("visible");
-  elemento.classList.add("oculto");
 }
 
 function confirmarProducto(e) {
@@ -271,6 +253,16 @@ function confirmarProducto(e) {
   }
 }
 
+function agregarAlCarrito({ id: prodId, nombre: prodNombre, precio: prodPrecio }, cantidad) {
+  const itemCompra = {
+    id: prodId,
+    nombre: prodNombre,
+    precio: prodPrecio,
+    cantidad: cantidad,
+  };
+  carritoDeCompra.push(itemCompra);
+  agregarItemAlCarrito(itemCompra);
+}
 function actualizarCarrito(indCarrito, idProd) {
   //obtengo el item del carrito mostrado en pantalla
   let itemCarrito = document.getElementById(idProd);
@@ -284,17 +276,6 @@ function actualizarCarrito(indCarrito, idProd) {
     "(X)";
 }
 
-function agregarAlCarrito({ id: prodId, nombre: prodNombre, precio: prodPrecio }, cantidad) {
-  const itemCompra = {
-    id: prodId,
-    nombre: prodNombre,
-    precio: prodPrecio,
-    cantidad: cantidad,
-  };
-  carritoDeCompra.push(itemCompra);
-  agregarItemAlCarrito(itemCompra);
-}
-
 function agregarItemAlCarrito({ id, nombre, precio, cantidad }) {
   let itemCarrito = document.createElement("a");
   itemCarrito.textContent = nombre + ", $" + precio + " cantidad:" + cantidad + "(X)";
@@ -304,24 +285,6 @@ function agregarItemAlCarrito({ id, nombre, precio, cantidad }) {
   seccionCarritoCompra.appendChild(itemCarrito);
 }
 
-function cancelarCompraProducto(e) {
-  e.preventDefault;
-  let itemCarrito = e.target;
-  //verifico que un item del carrito llamo al evento
-  if (itemCarrito.classList.contains("borrarProducto")) {
-    let codProducto = itemCarrito.getAttribute("id");
-    quitarDeCarritoCompra(codProducto);
-    quitarElementoApagina(itemCarrito);
-    ///aviso que se quito del carrito
-    msgSuccess("Se retiro de carrito");
-  }
-}
-function quitarDeCarritoCompra(codProducto) {
-  //obtengo el indice del producto en el array de carrito de compra, buscando el id
-  let indiceElemento = carritoDeCompra.indexOf(carritoDeCompra.find((producto) => producto.id === codProducto));
-  //quito el elemento
-  carritoDeCompra.splice(indiceElemento, 1);
-}
 function mostrarFormPago() {
   //verifico que la lista de compras no este vacia
   if (carritoDeCompra.length != 0) {
@@ -330,13 +293,11 @@ function mostrarFormPago() {
     inhabilitarBotonCompra(true);
   }
 }
-
 function verificarDatosForm(formulario) {
   return formulario.children[1].value == "" || formulario.children[3].value == "" || formulario.children[5].value == ""
     ? false
     : true;
 }
-
 function confirmarCompra(e) {
   e.preventDefault();
   //Obtenemos el elemento desde el cual se disparó el evento
@@ -374,3 +335,38 @@ function resetearEstadoCompra() {
   ///reactivo el boton de comprar
   inhabilitarBotonCompra(false);
 }
+function vaciarCarritoCompra() {
+  while (carritoDeCompra.length > 0) carritoDeCompra.pop();
+  while (seccionCarritoCompra.firstChild) {
+    seccionCarritoCompra.removeChild(seccionCarritoCompra.firstChild);
+  }
+}
+function cancelarCompraProducto(e) {
+  e.preventDefault;
+  let itemCarrito = e.target;
+  //verifico que un item del carrito llamo al evento
+  if (itemCarrito.classList.contains("borrarProducto")) {
+    let codProducto = itemCarrito.getAttribute("id");
+    quitarDeCarritoCompra(codProducto);
+    quitarElementoApagina(itemCarrito);
+    ///aviso que se quito del carrito
+    msgSuccess("Se retiro de carrito");
+  }
+}
+function quitarDeCarritoCompra(codProducto) {
+  //obtengo el indice del producto en el array de carrito de compra, buscando el id
+  let indiceElemento = carritoDeCompra.indexOf(carritoDeCompra.find((producto) => producto.id === codProducto));
+  //quito el elemento
+  carritoDeCompra.splice(indiceElemento, 1);
+}
+
+/*
+ function buscarProductoNombre() {
+    //vacio el muestrario para luego llenarlo del resultado de busqueda
+    seccionMuestrarioProd.innerHTML = "";
+    let str = this.obtenerValorInputText("buscadorInput");
+    const resultado = arrayProd.filter((el) => el.nombre.toLowerCase().includes(str.toLowerCase()));
+    //visualizo el array de productos luego del filtro
+    this.visualizarProd(resultado);
+  }
+*/
