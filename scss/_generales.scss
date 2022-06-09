@@ -189,3 +189,23 @@ body {
   text-align: left;
   font-size: 22px;
 }
+
+.oculto {
+  visibility: hidden;
+  height: 0;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.borrarProducto {
+  background-color: rgb(202, 42, 42);
+  border-radius: 6px;
+  padding: 5px 5px;
+  margin: 3px;
+  text-decoration: none;
+  color: white;
+  font-size: medium;
+  text-align: left;
+}

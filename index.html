@@ -85,7 +85,23 @@
             </ul>
           </div>
         </div>
-        <div class="seccionCarritoCompra" id="carritoCompra"></div>
+        <div>
+          <h2>Carrito de compra</h2>
+          <div class="seccionCarritoCompra column" id="carritoCompra"></div>
+          <button class="comprar__boton" id="botonCompra">Comprar</button>
+          <form class="formDatos column oculto" action="" id="formPago">
+            <label for="tarjeta">Ingrese nro de tarjeta:</label>
+            <input type="text" name="tarjeta" />
+            <label for="titular">Ingrese titular de la tarjeta:</label>
+            <input type="text" name="titular" />
+            <label for="cvv">Ingrese CVV de la tarjeta:</label>
+            <input type="text" name="cvv" />
+            <br />
+            <input type="submit" id="botonConfirmar" value="Confirmar Compra" />
+            <input type="reset" id="botonCancelarCompra" value="Cancelar" /><br />
+            <label id="avisoForm"></label>
+          </form>
+        </div>
       </div>
 
       <div class="buscador">
@@ -101,11 +117,75 @@
         <!--De haber compra, este texto sera reemplazado por la lista de compras-->
 
         <!--Aqui ira el formulario pago-->
-        <div class="formDatos" id="AreaformPago"></div>
-        <button class="comprar__boton" id="botonCompra">Comprar</button>
+
         <h1>Muestrario de nuestros productos informaticos</h1>
         <div class="productos" id="listaProductos">
           <!---Aqui ira la lista de todos los productos cargados-->
+
+          <div class="articulo" id="prod0">
+            <div class="articulo__nombre">Mouse Redragon Griffin M607 RGB USB 7200DPI</div>
+            <div class="articulo__precio">$1730</div>
+            <img class="articulo__imagen" src="./images/Mouse.png" alt="" />
+            <button class="articulo__boton-compra">COMPRAR</button>
+            <div class="cantidadCompra oculto">
+              <input type="text" placeholder="Ingrese cantidad" />
+              <input type="button" class="botonAGregarProducto" value="Añadir" />
+            </div>
+          </div>
+
+          <div class="articulo" id="prod1">
+            <div class="articulo__nombre">Memoria Patriot Viper Steel 8gb Ddr4 3200mhz</div>
+            <div class="articulo__precio">$4720</div>
+            <img class="articulo__imagen" src="./images/memoriaRam.png" alt="" />
+            <button class="articulo__boton-compra">COMPRAR</button>
+            <div class="cantidadCompra oculto">
+              <input type="text" placeholder="Ingrese cantidad" />
+              <input type="button" class="botonAGregarProducto" value="Añadir" />
+            </div>
+          </div>
+
+          <div class="articulo" id="prod2">
+            <div class="articulo__nombre">Placa de Video Powercolor Radeon RX 550 Red Dragon 4GB GDDR5</div>
+            <div class="articulo__precio">$35500</div>
+            <img class="articulo__imagen" src="./images/placaVideo.png" alt="" />
+            <button class="articulo__boton-compra">COMPRAR</button>
+            <div class="cantidadCompra oculto">
+              <input type="text" placeholder="Ingrese cantidad" />
+              <input type="button" class="botonAGregarProducto" value="Añadir" />
+            </div>
+          </div>
+
+          <div class="articulo" id="prod3">
+            <div class="articulo__nombre">Mouse Razer Viper 8KHZ AMBIDEXTROUS WIRED USB</div>
+            <div class="articulo__precio">$8500</div>
+            <img class="articulo__imagen" src="./images/mouse2.png" alt="" />
+            <button class="articulo__boton-compra">COMPRAR</button>
+            <div class="cantidadCompra oculto">
+              <input type="text" placeholder="Ingrese cantidad" />
+              <input type="button" class="botonAGregarProducto" value="Añadir" />
+            </div>
+          </div>
+
+          <div class="articulo" id="prod4">
+            <div class="articulo__nombre">Mouse Logitech G203 Gaming Lightsync RGB Blue 8000 DPI</div>
+            <div class="articulo__precio">$2800</div>
+            <img class="articulo__imagen" src="./images/mouse3.png" alt="" />
+            <button class="articulo__boton-compra">COMPRAR</button>
+            <div class="cantidadCompra oculto">
+              <input type="text" placeholder="Ingrese cantidad" />
+              <input type="button" class="botonAGregarProducto" value="Añadir" />
+            </div>
+          </div>
+          <div class="articulo" id="prod5">
+            <div class="articulo__nombre">Placa de Video Powercolor AMD BC-2235 10GB GDDR6 40Mh/s Bulk</div>
+            <div class="articulo__precio">$85500</div>
+            <img class="articulo__imagen" src="./images/placaVideo2.png" alt="" />
+            <button class="articulo__boton-compra">COMPRAR</button>
+            <div class="cantidadCompra oculto">
+              <input type="text" placeholder="Ingrese cantidad" />
+              <input type="button" class="botonAGregarProducto" value="Añadir" />
+            </div>
+          </div>
         </div>
       </div>
       <br />

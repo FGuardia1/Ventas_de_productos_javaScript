@@ -184,6 +184,26 @@ body {
   font-size: 22px;
 }
 
+.oculto {
+  visibility: hidden;
+  height: 0;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.borrarProducto {
+  background-color: #ca2a2a;
+  border-radius: 6px;
+  padding: 5px 5px;
+  margin: 3px;
+  text-decoration: none;
+  color: white;
+  font-size: medium;
+  text-align: left;
+}
+
 header {
   background: linear-gradient(to right, #4458c9, #061b5e);
   padding: 0.5rem 0;
@@ -394,14 +414,15 @@ input[type=reset] {
 
 .comprar__boton {
   background-color: #002cbb;
-  color: white;
-  padding: 12px 32px;
   text-decoration: none;
+  color: white;
+  padding: 2px;
+  text-align: center;
   margin: 4px 2px;
   cursor: pointer;
   border-radius: 6px;
-  min-height: 60px;
-  width: 260px;
+  min-height: 50px;
+  width: 100px;
 }
 
 input[type=text] {
