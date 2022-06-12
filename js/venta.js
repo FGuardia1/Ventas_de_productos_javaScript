@@ -10,7 +10,7 @@ let seccionMuestrarioProd = document.getElementById("listaProductos");
 let seccionCarritoCompra = document.getElementById("carritoCompra");
 let seccionFormPago = document.getElementById("AreaformPago");
 let botonCompra = document.getElementById("botonCompra");
-let botonBuscar = document.getElementById("botonBuscar");
+//let botonBuscar = document.getElementById("botonBuscar");
 let formularioPago = document.getElementById("formPago");
 
 ///Obtiene el array de productos guardados en local y lo asigna a la variable de productos del script
@@ -19,6 +19,7 @@ obtenerProductosJson();
 obtenerVentasLocal();
 /////Declaro listeners///
 crearListeners();
+
 function crearListeners() {
   seccionMuestrarioProd.addEventListener("click", mostrarCajaIngresoCantidad);
   botonCompra.addEventListener("click", mostrarFormPago);
@@ -26,7 +27,7 @@ function crearListeners() {
   formularioPago.addEventListener("submit", confirmarCompra);
   formularioPago.addEventListener("reset", () => {
     ocultarElemento(formularioPago);
-    inhabilitarBotonCompra(false);
+    mostrarElemento(botonCompra);
   });
   let botonesAgregar = document.getElementsByClassName("botonAGregarProducto");
   for (const boton of botonesAgregar) {
@@ -60,7 +61,7 @@ function obtenerFechaActual() {
 }
 
 function realizarPagoTarjeta(tarjeta) {
-  ////aqui se realizara el pago por tarjeta
+  ////aqui se realizara el pago por tarjeta, una comunicacion con el sistema del banco
   return true;
 }
 
@@ -85,7 +86,7 @@ function crearObjetoVenta(nrotarjeta) {
 
 function descontarStock() {
   for (const producto of carritoDeCompra) {
-    arrayProd[producto.id].stock = arrayProd[producto.id].stock - producto.cantidad;
+    arrayProd[producto.id].stock -= producto.cantidad;
   }
 }
 
@@ -122,10 +123,6 @@ function msgCompraExitosa() {
   });
 }
 
-function inhabilitarBotonCompra(modo) {
-  botonCompra.disabled = modo;
-}
-
 function quitarElementoApagina(elemento) {
   elemento.remove();
 }
@@ -154,7 +151,7 @@ function confirmarProducto(e) {
   e.preventDefault();
   ///obtengo el producto que se muestra en la pagina
   const productoSelecionado = e.target.parentElement.parentElement;
-  //obtengo el id del producto
+  //obtengo el id del producto, es el numero del id
   let codProducto = productoSelecionado.getAttribute("id").slice(4);
   //obtengo el input text de ingreso de cantidad
   let inputCantidad = productoSelecionado.querySelector('input[type="text"]');
@@ -174,7 +171,7 @@ function confirmarProducto(e) {
     if (indiceProdCarrito != -1) {
       ///verifico si el stock cubre la cantidad pedida mas la cantidad ya pedida en el carrito
       if (!verificarStock(productoVta, parseInt(cantidad) + parseInt(carritoDeCompra[indiceProdCarrito].cantidad))) {
-        msgAviso("fail", "El Stock no alcanza a cubrir lo pedido con la que ya hay en el carrito");
+        msgAviso("fail", "El Stock no alcanza a cubrir lo pedido");
       } else {
         ////Añado la cantidad a la lista de productos a comprar
         carritoDeCompra[indiceProdCarrito].cantidad = parseInt(carritoDeCompra[indiceProdCarrito].cantidad) + parseInt(cantidad);
@@ -237,8 +234,10 @@ function mostrarFormPago() {
   //verifico que la lista de compras no este vacia
   if (carritoDeCompra.length != 0) {
     mostrarElemento(formularioPago);
-    ///desactivo por el momento el boton de comprar
-    inhabilitarBotonCompra(true);
+    ///oculto por el momento el boton de comprar, que muestra el formulario de pago
+    ocultarElemento(botonCompra);
+  } else {
+    msgAviso("fail", "carrito vacio");
   }
 }
 function verificarDatosForm(formulario) {
@@ -278,8 +277,8 @@ function resetearEstadoCompra() {
   ocultarElemento(formularioPago);
   ////vacio el carrito
   vaciarCarritoCompra();
-  ///reactivo el boton de comprar
-  inhabilitarBotonCompra(false);
+  ///muestro de nuevo el boton de comprar
+  mostrarElemento(botonCompra);
 }
 function vaciarCarritoCompra() {
   while (carritoDeCompra.length > 0) carritoDeCompra.pop();

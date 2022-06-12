@@ -196,7 +196,7 @@ body {
 }
 
 .borrarProducto {
-  background-color: #ca2a2a;
+  background-color: #1d20dd;
   border-radius: 6px;
   padding: 5px 5px;
   margin: 3px;
@@ -204,6 +204,10 @@ body {
   color: white;
   font-size: medium;
   text-align: left;
+}
+
+.borrarProducto:hover {
+  background-color: #ca2a2a;
 }
 
 header {
