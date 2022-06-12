@@ -185,12 +185,14 @@ body {
 }
 
 .oculto {
-  visibility: hidden;
-  height: 0;
+  position: absolute;
+  left: -100%;
+  /*visibility: hidden;
+  height: 0;*/
 }
 
 .visible {
-  visibility: visible;
+  left: 0%;
 }
 
 .borrarProducto {

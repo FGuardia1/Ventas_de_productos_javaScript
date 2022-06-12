@@ -1,43 +1,3 @@
-//////////////Creo el array de productos
-const productos = [
-  {
-    id: 0,
-    nombre: "Mouse Redragon Griffin M607 RGB USB 7200DPI",
-    precio: 1730,
-    stock: 20,
-  },
-  {
-    id: 1,
-    nombre: "Memoria Patriot Viper Steel 8gb Ddr4 3200mhz",
-    precio: 4720,
-    stock: 10,
-  },
-  {
-    id: 2,
-    nombre: "Placa de Video Powercolor Radeon RX 550 Red Dragon 4GB GDDR5",
-    precio: 35500,
-    stock: 5,
-  },
-  {
-    id: 3,
-    nombre: "Mouse Razer Viper 8KHZ AMBIDEXTROUS WIRED USB",
-    precio: 8500,
-    stock: 8,
-  },
-  {
-    id: 4,
-    nombre: "Mouse Logitech G203 Gaming Lightsync RGB Blue 8000 DPI",
-    precio: 2800,
-    stock: 5,
-  },
-  {
-    id: 5,
-    nombre: "Placa de Video Powercolor AMD BC-2235 10GB GDDR6 40Mh/s Bulk",
-    precio: 85000,
-    stock: 6,
-  },
-];
-
 //array de todos los productos
 let arrayProd;
 //array de todas las ventas registradas
@@ -53,10 +13,8 @@ let botonCompra = document.getElementById("botonCompra");
 let botonBuscar = document.getElementById("botonBuscar");
 let formularioPago = document.getElementById("formPago");
 
-///Guardo el array de productos en local, luego de ejecutarse una vez, se puede dejar comentada la linea
-guardarLocal("productos", JSON.stringify(productos));
 ///Obtiene el array de productos guardados en local y lo asigna a la variable de productos del script
-obtenerProductosLocal();
+obtenerProductosJson();
 ///Obtiene las ventas hechas,
 obtenerVentasLocal();
 /////Declaro listeners///
@@ -79,8 +37,10 @@ function crearListeners() {
 
 //////Declaracion de funciones//////
 //////////funciones de uso de storage,local
-function obtenerProductosLocal() {
-  arrayProd = JSON.parse(localStorage.getItem("productos"));
+async function obtenerProductosJson() {
+  const resp = await fetch("js/productos.json");
+  const data = await resp.json();
+  arrayProd = data;
 }
 function obtenerVentasLocal() {
   //uso el operador logico or para simplificar la asignacion del array de ventas o la inicializacion del mismo
@@ -137,6 +97,22 @@ function validarDatos(cantidad) {
   return cantidad > 0 ? true : false;
 }
 
+function msgAviso(tipo, msg) {
+  let fondo = tipo == "success" ? "linear-gradient(to right, #00b09b, #96c93d)" : "linear-gradient(to right, #db0b0b,#990f0f)";
+  Toastify({
+    text: msg,
+    duration: 3500,
+    close: true,
+    gravity: "bottom",
+    position: "right",
+    stopOnFocus: true,
+    style: {
+      background: fondo,
+      width: "300px",
+    },
+  }).showToast();
+}
+
 function msgCompraExitosa() {
   Swal.fire({
     title: "Se registro su compra",
@@ -144,35 +120,6 @@ function msgCompraExitosa() {
     icon: "success",
     confirmButtonText: "OK",
   });
-}
-function msgFallo(msg) {
-  Toastify({
-    text: msg,
-    duration: 4500,
-    close: true,
-    gravity: "bottom", // `top` or `bottom`
-    position: "right", // `left`, `center` or `right`
-    stopOnFocus: true, // Prevents dismissing of toast on hover
-    style: {
-      background: "linear-gradient(to right, #db0b0b,#990f0f)",
-      width: "300px",
-    },
-  }).showToast();
-}
-
-function msgSuccess(msg) {
-  Toastify({
-    text: msg,
-    duration: 3000,
-    close: true,
-    gravity: "bottom", // `top` or `bottom`
-    position: "right", // `left`, `center` or `right`
-    stopOnFocus: true, // Prevents dismissing of toast on hover
-    style: {
-      background: "linear-gradient(to right, #00b09b, #96c93d)",
-      width: "300px",
-    },
-  }).showToast();
 }
 
 function inhabilitarBotonCompra(modo) {
@@ -217,7 +164,7 @@ function confirmarProducto(e) {
   let productoVta = arrayProd[codProducto];
   //verifico que lo ingresado sea un numero valido
   if (!validarDatos(cantidad)) {
-    msgFallo("Ingreso erroneo");
+    msgAviso("fail", "Ingreso erroneo");
   } else {
     ///obtengo la caja de ingreso de cantidad, para ocultarla luego
     let elemIngreso = productoSelecionado.querySelector(".cantidadCompra");
@@ -227,24 +174,24 @@ function confirmarProducto(e) {
     if (indiceProdCarrito != -1) {
       ///verifico si el stock cubre la cantidad pedida mas la cantidad ya pedida en el carrito
       if (!verificarStock(productoVta, parseInt(cantidad) + parseInt(carritoDeCompra[indiceProdCarrito].cantidad))) {
-        msgFallo("El Stock no alcanza a cubrir lo pedido con la que ya hay en el carrito");
+        msgAviso("fail", "El Stock no alcanza a cubrir lo pedido con la que ya hay en el carrito");
       } else {
         ////Añado la cantidad a la lista de productos a comprar
         carritoDeCompra[indiceProdCarrito].cantidad = parseInt(carritoDeCompra[indiceProdCarrito].cantidad) + parseInt(cantidad);
         //Modifico la cantidad del item del carrito mostrado en pantalla
         actualizarCarrito(indiceProdCarrito, carritoDeCompra[indiceProdCarrito].id);
         //aviso que se agrego al carrito de compras
-        msgSuccess("Cantidad del producto añadido al carrito");
+        msgAviso("success", "Cantidad del producto añadido al carrito");
       }
     } else {
       ///verifico que el stock actual del producto alcance a cubrir la cantidad pedida
       if (!verificarStock(productoVta, cantidad)) {
-        msgFallo("Stock insuficiente");
+        msgAviso("fail", "Stock insuficiente");
       } else {
         ////Añado el producto a la lista de productos a comprar
         agregarAlCarrito(productoVta, cantidad);
         //aviso que se agrego al carrito de compras
-        msgSuccess("Producto añadido al carrito");
+        msgAviso("success", "Producto añadido al carrito");
       }
     }
     //reseteo el input y oculto la caja de ingreso de cantidad
@@ -263,6 +210,7 @@ function agregarAlCarrito({ id: prodId, nombre: prodNombre, precio: prodPrecio }
   carritoDeCompra.push(itemCompra);
   agregarItemAlCarrito(itemCompra);
 }
+
 function actualizarCarrito(indCarrito, idProd) {
   //obtengo el item del carrito mostrado en pantalla
   let itemCarrito = document.getElementById(idProd);
@@ -304,13 +252,13 @@ function confirmarCompra(e) {
   let formulario = e.target;
   if (!verificarDatosForm(formulario)) {
     ///aviso que los valores ingresados son erroneos
-    msgFallo("Datos Ingresados no validos");
+    msgAviso("fail", "Datos Ingresados no validos");
   } else {
     ///crea el objeto tarjeta
     const tarjeta = crearObjetoTarjeta(formulario);
     ////realiza el pago por tarjeta, devuelve true si pudo, sino false
     if (!realizarPagoTarjeta(tarjeta)) {
-      msgFallo("No se pudo realizar el pago");
+      msgAviso("fail", "No se pudo realizar el pago");
     } else {
       const venta = crearObjetoVenta(tarjeta.nroTarjeta);
       ///una vez registrada la compra hago el descuento de stock al/los producto/s correspondiente/
@@ -319,8 +267,6 @@ function confirmarCompra(e) {
       msgCompraExitosa();
       ///reseteo el estado visual de la pagina y vacio la lista de compras pendientes
       resetearEstadoCompra();
-      ///guardo los cambios de stock a la copia en local
-      guardarLocal("productos", JSON.stringify(arrayProd));
       ///registro la venta en el array de ventas y en local
       agregarVenta(venta);
     }
@@ -330,7 +276,7 @@ function resetearEstadoCompra() {
   ///oculto el form de pago
   formularioPago.reset();
   ocultarElemento(formularioPago);
-  ////vacio el array de compra
+  ////vacio el carrito
   vaciarCarritoCompra();
   ///reactivo el boton de comprar
   inhabilitarBotonCompra(false);
@@ -350,7 +296,7 @@ function cancelarCompraProducto(e) {
     quitarDeCarritoCompra(codProducto);
     quitarElementoApagina(itemCarrito);
     ///aviso que se quito del carrito
-    msgSuccess("Se retiro de carrito");
+    msgAviso("success", "Se retiro de carrito");
   }
 }
 function quitarDeCarritoCompra(codProducto) {
