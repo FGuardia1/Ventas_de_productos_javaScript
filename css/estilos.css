@@ -178,10 +178,27 @@ body {
   font-size: 25px;
 }
 
-.seccionCarritoCompra {
-  padding: 5px;
+.carrito {
+  position: relative;
+  margin: 3px;
+}
+
+.carrito .seccionCarritoCompra {
+  display: none;
+}
+
+.carrito:hover .seccionCarritoCompra {
+  display: block;
+  position: absolute;
+  right: 0%;
+  top: 100%;
+  z-index: 1;
+  background-color: #8b8b8b;
+  padding: 20px;
   text-align: left;
   font-size: 22px;
+  min-height: 200px;
+  min-width: 200px;
 }
 
 .oculto {
@@ -208,6 +225,63 @@ body {
 
 .borrarProducto:hover {
   background-color: #ca2a2a;
+}
+
+.restar-producto {
+  background-color: #eeff01;
+  border-radius: 50%;
+  padding: 5px;
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  margin: 3px;
+}
+
+.sumar-producto {
+  background-color: #0004ff;
+  border-radius: 50%;
+  padding: 5px;
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  margin: 3px;
+}
+
+.quitar-producto {
+  background-color: red;
+  border-radius: 50%;
+  padding: 5px;
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  margin: 3px;
+}
+
+.carrito {
+  border: 1px solid #ff1111;
+  border-radius: 50%;
+  background-color: #ddd;
+  padding: 10px;
+}
+
+#lista-carrito {
+  font-size: small;
+  overflow-x: auto;
+  border-spacing: 5px;
+  width: 100%;
+  table-layout: auto;
+  border: 1px solid #ddd;
+}
+#lista-carrito tr {
+  border: 1px solid #ddd;
+}
+#lista-carrito td {
+  border: 1px solid #ddd;
+  font-size: medium;
+}
+
+#totalCarrito {
+  margin-top: 15px;
 }
 
 header {
@@ -397,7 +471,8 @@ a img {
 
 input[type=button],
 input[type=submit],
-input[type=reset] {
+input[type=reset],
+#btnVaciarCarrito {
   background-color: #002cbb;
   color: white;
   padding: 12px 32px;
@@ -512,6 +587,32 @@ input[type=text] {
 
   .buscador input[type=text] {
     width: 600px;
+  }
+
+  .carrito:hover .seccionCarritoCompra {
+    display: block;
+    position: absolute;
+    right: 100%;
+    top: -500%;
+    z-index: 1;
+    background-color: #8b8b8b;
+    padding: 20px;
+    text-align: left;
+    font-size: 22px;
+    min-height: 400px;
+    min-width: 300px;
+    max-width: fit-content;
+  }
+
+  th {
+    font-size: medium;
+  }
+
+  td {
+    white-space: nowrap;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    font-size: large;
   }
 }
 

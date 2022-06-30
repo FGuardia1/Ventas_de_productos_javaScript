@@ -87,9 +87,27 @@
         </div>
         <div>
           <h2>Carrito de compra</h2>
-          <div class="seccionCarritoCompra column" id="carritoCompra"></div>
-          <button class="comprar__boton" id="botonCompra">Comprar</button>
+          <div class="carrito">
+            <img src="./images/cart.png" alt="" />
+            <div class="seccionCarritoCompra" id="carritoCompra">
+              <table id="lista-carrito" class="u-full-width">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+              <p id="totalCarrito">Total: $0</p>
+              <button id="btnVaciarCarrito">Vaciar Carrito</button>
+            </div>
+          </div>
 
+          <button class="comprar__boton" id="botonCompra">Comprar</button>
           <form class="formDatos column oculto" action="" id="formPago">
             <label for="tarjeta">Ingrese nro de tarjeta:</label>
             <input type="text" name="tarjeta" />
@@ -128,10 +146,6 @@
             <div class="articulo__precio">$1730</div>
             <img class="articulo__imagen" src="./images/Mouse.png" alt="" />
             <button class="articulo__boton-compra">COMPRAR</button>
-            <div class="cantidadCompra oculto">
-              <input type="text" placeholder="Ingrese cantidad" />
-              <input type="button" class="botonAGregarProducto" value="Añadir" />
-            </div>
           </div>
 
           <div class="articulo" id="prod1">
@@ -139,21 +153,12 @@
             <div class="articulo__precio">$4720</div>
             <img class="articulo__imagen" src="./images/memoriaRam.png" alt="" />
             <button class="articulo__boton-compra">COMPRAR</button>
-            <div class="cantidadCompra oculto">
-              <input type="text" placeholder="Ingrese cantidad" />
-              <input type="button" class="botonAGregarProducto" value="Añadir" />
-            </div>
           </div>
-
           <div class="articulo" id="prod2">
             <div class="articulo__nombre">Placa de Video Powercolor Radeon RX 550 Red Dragon 4GB GDDR5</div>
             <div class="articulo__precio">$35500</div>
             <img class="articulo__imagen" src="./images/placaVideo.png" alt="" />
             <button class="articulo__boton-compra">COMPRAR</button>
-            <div class="cantidadCompra oculto">
-              <input type="text" placeholder="Ingrese cantidad" />
-              <input type="button" class="botonAGregarProducto" value="Añadir" />
-            </div>
           </div>
 
           <div class="articulo" id="prod3">
@@ -161,10 +166,6 @@
             <div class="articulo__precio">$8500</div>
             <img class="articulo__imagen" src="./images/mouse2.png" alt="" />
             <button class="articulo__boton-compra">COMPRAR</button>
-            <div class="cantidadCompra oculto">
-              <input type="text" placeholder="Ingrese cantidad" />
-              <input type="button" class="botonAGregarProducto" value="Añadir" />
-            </div>
           </div>
 
           <div class="articulo" id="prod4">
@@ -172,20 +173,12 @@
             <div class="articulo__precio">$2800</div>
             <img class="articulo__imagen" src="./images/mouse3.png" alt="" />
             <button class="articulo__boton-compra">COMPRAR</button>
-            <div class="cantidadCompra oculto">
-              <input type="text" placeholder="Ingrese cantidad" />
-              <input type="button" class="botonAGregarProducto" value="Añadir" />
-            </div>
           </div>
           <div class="articulo" id="prod5">
             <div class="articulo__nombre">Placa de Video Powercolor AMD BC-2235 10GB GDDR6 40Mh/s Bulk</div>
             <div class="articulo__precio">$85500</div>
             <img class="articulo__imagen" src="./images/placaVideo2.png" alt="" />
             <button class="articulo__boton-compra">COMPRAR</button>
-            <div class="cantidadCompra oculto">
-              <input type="text" placeholder="Ingrese cantidad" />
-              <input type="button" class="botonAGregarProducto" value="Añadir" />
-            </div>
           </div>
         </div>
       </div>
