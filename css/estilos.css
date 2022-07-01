@@ -590,7 +590,7 @@ input[type=text] {
     display: block;
     position: absolute;
     right: 100%;
-    top: -300%;
+    top: -400%;
     z-index: 1;
     background-color: #8b8b8b;
     padding: 20px;
