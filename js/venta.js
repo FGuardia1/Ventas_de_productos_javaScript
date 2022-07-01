@@ -8,6 +8,7 @@ let carritoDeCompra = [];
 let tablaCarrito = document.querySelector("#lista-carrito tbody");
 let botonVaciarCarrito = document.getElementById("btnVaciarCarrito");
 let totalCarrito = document.getElementById("totalCarrito");
+let carritoCant = document.getElementById("carritoCantidad");
 let inputTextBuscador = document.getElementById("buscadorInput");
 let botonBuscar = document.getElementById("botonBuscar");
 let seccionMuestrarioProd = document.getElementById("listaProductos");
@@ -183,6 +184,7 @@ function agregarAlCarrito({ id: prodId, nombre: prodNombre, precio: prodPrecio }
     cantidad: 1,
   };
   carritoDeCompra.push(itemCompra);
+
   guardarLocal("carritoCompra", JSON.stringify(carritoDeCompra));
   agregarItemAlCarrito(itemCompra);
 }
@@ -193,13 +195,13 @@ function obtenerHtmlfilaTabla({ nombre, precio, cantidad }) {
   <td>$${precio}</td>
   <td >
   <div class="fila fila--notwrap">
-   <a href="javascript:void(0)" class="restar-producto" > - </a>
+   <a href="javascript:void(0)" class="opcionesItem restar-producto" > - </a>
   ${cantidad}
-  <a href="javascript:void(0)" class="sumar-producto" > + </a>
+  <a href="javascript:void(0)" class="opcionesItem sumar-producto" > + </a>
   </div>
   </td>
   <td>$${precio * cantidad}</td>
-  <td><a href="javascript:void(0)" class="quitar-producto"> X </a></td>
+  <td><a href="javascript:void(0)" class="opcionesItem quitar-producto"> X </a></td>
 `;
 }
 
@@ -208,6 +210,7 @@ function agregarItemAlCarrito(itemCompra) {
   row.innerHTML = obtenerHtmlfilaTabla(itemCompra);
   row.setAttribute("id", itemCompra.id);
   tablaCarrito.appendChild(row);
+  carritoCant.textContent = carritoDeCompra.length;
   mostrarTotalCarrito();
 }
 
@@ -275,6 +278,7 @@ function quitarDeCarrito(itemCarrito) {
   let codProducto = itemCarrito.getAttribute("id");
   quitarDeCarritoCompra(codProducto);
   quitarElementoApagina(itemCarrito);
+  carritoCant.textContent = carritoDeCompra.length;
   mostrarTotalCarrito();
   ///aviso que se quito del carrito
   msgAviso("success", "Se retiro de carrito");
@@ -340,6 +344,8 @@ function vaciarCarritoCompra() {
   while (tablaCarrito.firstChild) {
     tablaCarrito.removeChild(tablaCarrito.firstChild);
   }
+  //se muestra la cantidad de productos en el carrito
+  carritoCant.textContent = carritoDeCompra.length;
   //se borra la copia en local
   localStorage.removeItem("carritoCompra");
   mostrarTotalCarrito();
