@@ -179,10 +179,12 @@ function obtenerHtmlfilaTabla({ nombre, precio, cantidad }) {
   return `      
   <td>${nombre}</td>
   <td>$${precio}</td>
-  <td>
-  <a href="javascript:void(0)" class="restar-producto" > - </a>
+  <td >
+  <div class="fila fila--notwrap">
+   <a href="javascript:void(0)" class="restar-producto" > - </a>
   ${cantidad}
   <a href="javascript:void(0)" class="sumar-producto" > + </a>
+  </div>
   </td>
   <td>$${precio * cantidad}</td>
   <td><a href="javascript:void(0)" class="quitar-producto"> X </a></td>
@@ -202,11 +204,11 @@ function opcionesItemCarrito(e) {
   ///Compruebo que boton del item del carrito fue quien llamo al evento
   //en cada opcion envio como parametro al item del carrito
   if (e.target.classList.contains("restar-producto")) {
-    sumarRestarProducto(e.target.parentElement.parentElement, "restar");
+    sumarRestarProducto(e.target.parentElement.parentElement.parentElement, "restar");
   }
 
   if (e.target.classList.contains("sumar-producto")) {
-    sumarRestarProducto(e.target.parentElement.parentElement, "sumar");
+    sumarRestarProducto(e.target.parentElement.parentElement.parentElement, "sumar");
   }
 
   if (e.target.classList.contains("quitar-producto")) {

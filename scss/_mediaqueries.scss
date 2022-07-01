@@ -71,8 +71,7 @@
     display: block;
     position: absolute;
     right: 100%;
-
-    top: -500%;
+    top: -300%;
     z-index: 1;
     background-color: rgb(139, 139, 139);
     padding: 20px;
@@ -91,6 +90,6 @@
     white-space: nowrap;
     overflow: hidden;
     border: 1px solid #ddd;
-    font-size: large;
+    font-size: medium;
   }
 }

@@ -28,10 +28,10 @@
 }
 
 .fila {
-  margin: 1rem;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  align-items: center;
 }
 
 .fila--wrap {
