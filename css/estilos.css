@@ -204,12 +204,6 @@ body {
 .oculto {
   position: absolute;
   left: -100%;
-  /*visibility: hidden;
-  height: 0;*/
-}
-
-.visible {
-  left: 0%;
 }
 
 .borrarProducto {

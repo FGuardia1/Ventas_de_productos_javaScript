@@ -9,11 +9,9 @@ let botonVaciarCarrito = document.getElementById("btnVaciarCarrito");
 let totalCarrito = document.getElementById("totalCarrito");
 let inputTextBuscador = document.getElementById("buscadorInput");
 let seccionMuestrarioProd = document.getElementById("listaProductos");
-let seccionCarritoCompra = document.getElementById("carritoCompra");
-let seccionFormPago = document.getElementById("AreaformPago");
 let botonCompra = document.getElementById("botonCompra");
-const tablaCarrito = document.querySelector("#lista-carrito tbody");
-//let botonBuscar = document.getElementById("botonBuscar");
+let tablaCarrito = document.querySelector("#lista-carrito tbody");
+let botonBuscar = document.getElementById("botonBuscar");
 let formularioPago = document.getElementById("formPago");
 
 ///Obtiene el array de productos guardados en local y lo asigna a la variable de productos del script
@@ -22,6 +20,8 @@ obtenerProductosJson();
 obtenerVentasLocal();
 /////Declaro listeners///
 crearListeners();
+
+//////Declaracion de funciones//////
 
 function crearListeners() {
   botonVaciarCarrito.addEventListener("click", vaciarCarritoCompra);
@@ -37,7 +37,6 @@ function crearListeners() {
   });
 }
 
-//////Declaracion de funciones//////
 //////////funciones de uso de storage,local
 async function obtenerProductosJson() {
   const resp = await fetch("js/productos.json");
@@ -49,11 +48,11 @@ function opcionesItemCarrito(e) {
   e.preventDefault();
   ///Compruebo que el boton de compra fue quien llamo al evento
   if (e.target.classList.contains("restar-producto")) {
-    restarProducto(e.target.parentElement.parentElement);
+    sumarRestarProducto(e.target.parentElement.parentElement, "restar");
   }
 
   if (e.target.classList.contains("sumar-producto")) {
-    sumarProducto(e.target.parentElement.parentElement);
+    sumarRestarProducto(e.target.parentElement.parentElement, "sumar");
   }
 
   if (e.target.classList.contains("quitar-producto")) {
@@ -117,10 +116,6 @@ function verificarStock({ stock: productoStock }, cantidad) {
   return productoStock >= cantidad ? true : false;
 }
 
-function validarDatos(cantidad) {
-  return cantidad > 0 ? true : false;
-}
-
 function msgAviso(tipo, msg) {
   let fondo = tipo == "success" ? "linear-gradient(to right, #00b09b, #96c93d)" : "linear-gradient(to right, #db0b0b,#990f0f)";
   Toastify({
@@ -151,50 +146,47 @@ function quitarElementoApagina(elemento) {
 }
 function mostrarElemento(elemento) {
   elemento.classList.remove("oculto");
-  elemento.classList.add("visible");
 }
 function ocultarElemento(elemento) {
-  elemento.classList.remove("visible");
   elemento.classList.add("oculto");
 }
 
-function sumarProducto(itemCarrito) {
+function sumarRestarProducto(itemCarrito, operacion) {
   let codProducto = itemCarrito.getAttribute("id");
   ///selecciona el producto por el codigo
   let productoVta = arrayProd[codProducto];
   let indiceProdCarrito = carritoDeCompra.indexOf(carritoDeCompra.find((producto) => producto.id == codProducto));
-  ///verifico si el stock cubre la cantidad pedida mas la cantidad ya pedida en el carrito
-  if (!verificarStock(productoVta, parseInt(carritoDeCompra[indiceProdCarrito].cantidad) + 1)) {
-    msgAviso("fail", "El Stock no alcanza a cubrir lo pedido");
-  } else {
-    ////Añado la cantidad a la lista de productos a comprar
-    carritoDeCompra[indiceProdCarrito].cantidad = parseInt(carritoDeCompra[indiceProdCarrito].cantidad) + 1;
-    //Modifico la cantidad del item del carrito mostrado en pantalla
-    actualizarCarrito(indiceProdCarrito, carritoDeCompra[indiceProdCarrito].id);
-    setTotalCarrito();
 
-    //aviso que se agrego al carrito de compras
-    msgAviso("success", "Cantidad del producto añadido al carrito");
-  }
-}
+  switch (operacion) {
+    case "sumar":
+      if (!verificarStock(productoVta, parseInt(carritoDeCompra[indiceProdCarrito].cantidad) + 1)) {
+        msgAviso("fail", "El Stock no alcanza a cubrir lo pedido");
+      } else {
+        ////Añado la cantidad a la lista de productos a comprar
+        carritoDeCompra[indiceProdCarrito].cantidad = parseInt(carritoDeCompra[indiceProdCarrito].cantidad) + 1;
+        //Modifico la cantidad del item del carrito mostrado en pantalla
+        actualizarCarrito(indiceProdCarrito, carritoDeCompra[indiceProdCarrito].id);
+        setTotalCarrito();
 
-function restarProducto(itemCarrito) {
-  let codProducto = itemCarrito.getAttribute("id");
-  ///selecciona el producto por el codigo
-  let productoVta = arrayProd[codProducto];
-  let indiceProdCarrito = carritoDeCompra.indexOf(carritoDeCompra.find((producto) => producto.id == codProducto));
-  ///verifico si el stock cubre la cantidad pedida mas la cantidad ya pedida en el carrito
-  if (parseInt(carritoDeCompra[indiceProdCarrito].cantidad) - 1 == 0) {
-    msgAviso("fail", "Deberia eliminar el producto del carrito");
-  } else {
-    ////Añado la cantidad a la lista de productos a comprar
-    carritoDeCompra[indiceProdCarrito].cantidad = parseInt(carritoDeCompra[indiceProdCarrito].cantidad) - 1;
-    //Modifico la cantidad del item del carrito mostrado en pantalla
-    actualizarCarrito(indiceProdCarrito, carritoDeCompra[indiceProdCarrito].id);
-    setTotalCarrito();
+        //aviso que se agrego al carrito de compras
+        msgAviso("success", "Cantidad del producto añadido al carrito");
+      }
 
-    //aviso que se agrego al carrito de compras
-    msgAviso("success", "Cantidad del producto quitado del carrito");
+      break;
+
+    case "restar":
+      if (parseInt(carritoDeCompra[indiceProdCarrito].cantidad) - 1 == 0) {
+        msgAviso("fail", "Deberia eliminar el producto del carrito");
+      } else {
+        carritoDeCompra[indiceProdCarrito].cantidad = parseInt(carritoDeCompra[indiceProdCarrito].cantidad) - 1;
+        //Modifico la cantidad del item del carrito mostrado en pantalla
+        actualizarCarrito(indiceProdCarrito, carritoDeCompra[indiceProdCarrito].id);
+        setTotalCarrito();
+        //aviso que se agrego al carrito de compras
+        msgAviso("success", "Cantidad del producto quitado del carrito");
+      }
+
+      break;
   }
 }
 
@@ -218,7 +210,6 @@ function agregarProducto(e) {
       } else {
         ////Añado el producto a la lista de productos a comprar
         agregarAlCarrito(productoVta, 1);
-        setTotalCarrito();
         //aviso que se agrego al carrito de compras
         msgAviso("success", "Producto añadido al carrito");
       }
@@ -235,6 +226,7 @@ function agregarAlCarrito({ id: prodId, nombre: prodNombre, precio: prodPrecio }
   };
   carritoDeCompra.push(itemCompra);
   agregarItemAlCarrito(itemCompra);
+  setTotalCarrito();
 }
 
 function obtenerHtmlfilaTabla({ nombre, precio, cantidad }) {
@@ -255,7 +247,6 @@ function actualizarCarrito(indCarrito, idProd) {
   //obtengo el item del carrito mostrado en pantalla
   let itemCarrito = document.getElementById(idProd);
   //actualizo la nueva cantidad
-
   itemCarrito.innerHTML = obtenerHtmlfilaTabla(carritoDeCompra[indCarrito]);
 }
 
@@ -267,6 +258,7 @@ function agregarItemAlCarrito(itemCompra) {
 }
 
 function mostrarFormPago() {
+  console.log(carritoDeCompra);
   //verifico que la lista de compras no este vacia
   if (carritoDeCompra.length != 0) {
     mostrarElemento(formularioPago);
@@ -314,7 +306,6 @@ function resetearEstadoCompra() {
   ocultarElemento(formularioPago);
   ////vacio el carrito
   vaciarCarritoCompra();
-
   ///muestro de nuevo el boton de comprar
   mostrarElemento(botonCompra);
 }
@@ -336,14 +327,17 @@ function cancelarCompraProducto(itemCarrito) {
 }
 function quitarDeCarritoCompra(codProducto) {
   //let indiceElemento = carritoDeCompra.indexOf(carritoDeCompra.find((producto) => producto.id === codProducto));
-
   carritoDeCompra = carritoDeCompra.filter((producto) => producto.id != codProducto);
 }
 
 function buscarProductoNombre() {
   let codProdMuestrario;
   let str = inputTextBuscador.value;
+
   const resultado = arrayProd.filter((el) => el.nombre.toLowerCase().includes(str.toLowerCase()));
+  for (const hijo of seccionMuestrarioProd.children) {
+    if (hijo.classList.contains("oculto")) mostrarElemento(hijo);
+  }
 
   for (const hijo of seccionMuestrarioProd.children) {
     let codProdMuestrario = hijo.getAttribute("id").slice(4);
