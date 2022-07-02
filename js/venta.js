@@ -20,8 +20,6 @@ let contenedorFormulario = formularioPago.parentElement;
 obtenerProductosJson();
 ///Obtiene las ventas anteriores hechas,
 obtenerVentasLocal();
-///Obtiene el carrito de compraActual,pendiente
-obtenerCarritoLocal();
 /////Declaro listeners///
 crearListeners();
 
@@ -53,11 +51,6 @@ function obtenerVentasLocal() {
 
 function guardarLocal(clave, valor) {
   localStorage.setItem(clave, valor);
-}
-
-function obtenerCarritoLocal() {
-  carritoDeCompra = JSON.parse(localStorage.getItem("carritoCompra")) || [];
-  visualizarCarrito();
 }
 
 function agregarVenta(venta) {
@@ -182,8 +175,6 @@ function agregarAlCarrito({ id: prodId, nombre: prodNombre, precio: prodPrecio }
     cantidad: 1,
   };
   carritoDeCompra.push(itemCompra);
-  ///sincronizo con la copia en local
-  guardarLocal("carritoCompra", JSON.stringify(carritoDeCompra));
   ///muestro visualmente el prod en el carrito
   agregarItemAlCarrito(itemCompra);
 }
@@ -260,8 +251,6 @@ function sumarRestarProducto(itemCarrito, operacion) {
   }
   //Modifico la cantidad del item del carrito mostrado en pantalla
   actualizarItemCarrito(indiceProdCarrito);
-  ///guardo los cambios al carrito en local
-  guardarLocal("carritoCompra", JSON.stringify(carritoDeCompra));
 }
 
 function actualizarItemCarrito(indCarrito) {
@@ -281,10 +270,6 @@ function quitarDeCarrito(itemCarrito) {
   mostrarTotalCarrito();
   ///aviso que se quito del carrito
   msgAviso("success", "Se retiro de carrito");
-  ////si el carrito esta vacio se elimina de local, sino se actualiza
-  carritoDeCompra.length == 0
-    ? localStorage.removeItem("carritoCompra")
-    : guardarLocal("carritoCompra", JSON.stringify(carritoDeCompra));
 }
 
 function quitarDeCarritoCompra(codProducto) {
@@ -349,8 +334,6 @@ function vaciarCarritoCompra() {
   }
   //se muestra la cantidad de productos en el carrito
   carritoCant.textContent = carritoDeCompra.length;
-  //se borra la copia en local
-  localStorage.removeItem("carritoCompra");
   mostrarTotalCarrito();
 }
 
