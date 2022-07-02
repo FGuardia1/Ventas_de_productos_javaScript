@@ -38,17 +38,6 @@ function crearListeners() {
   });
 }
 
-function obtenerCarritoLocal() {
-  carritoDeCompra = JSON.parse(localStorage.getItem("carritoCompra")) || [];
-  visualizarCarrito();
-}
-
-function visualizarCarrito() {
-  for (const item of carritoDeCompra) {
-    agregarItemAlCarrito(item);
-  }
-}
-
 //////////funciones de uso de fetch y storage
 async function obtenerProductosJson() {
   const resp = await fetch("js/productos.json");
@@ -63,6 +52,11 @@ function obtenerVentasLocal() {
 
 function guardarLocal(clave, valor) {
   localStorage.setItem(clave, valor);
+}
+
+function obtenerCarritoLocal() {
+  carritoDeCompra = JSON.parse(localStorage.getItem("carritoCompra")) || [];
+  visualizarCarrito();
 }
 
 function agregarVenta(venta) {
@@ -86,7 +80,11 @@ function obtenerTotalCarrito() {
 function mostrarTotalCarrito() {
   totalCarrito.innerText = "Total: $" + obtenerTotalCarrito();
 }
-
+function visualizarCarrito() {
+  for (const item of carritoDeCompra) {
+    agregarItemAlCarrito(item);
+  }
+}
 function crearObjetoTarjeta(formulario) {
   let tarjeta = {
     nroTarjeta: formulario.children[1].value,
@@ -115,7 +113,6 @@ function descontarStock() {
 function verificarStock({ stock: productoStock }, cantidad) {
   return productoStock >= cantidad ? true : false;
 }
-
 function msgAviso(tipo, msg) {
   let fondo = tipo == "success" ? "linear-gradient(to right, #00b09b, #96c93d)" : "linear-gradient(to right, #db0b0b,#990f0f)";
   Toastify({
@@ -184,8 +181,9 @@ function agregarAlCarrito({ id: prodId, nombre: prodNombre, precio: prodPrecio }
     cantidad: 1,
   };
   carritoDeCompra.push(itemCompra);
-
+  ///sincronizo con la copia en local
   guardarLocal("carritoCompra", JSON.stringify(carritoDeCompra));
+  ///muestro visualmente el prod en el carrito
   agregarItemAlCarrito(itemCompra);
 }
 
@@ -260,21 +258,21 @@ function sumarRestarProducto(itemCarrito, operacion) {
       break;
   }
   //Modifico la cantidad del item del carrito mostrado en pantalla
-  actualizarItemCarrito(indiceProdCarrito, carritoDeCompra[indiceProdCarrito].id);
+  actualizarItemCarrito(indiceProdCarrito);
   ///guardo los cambios al carrito en local
   guardarLocal("carritoCompra", JSON.stringify(carritoDeCompra));
 }
 
-function actualizarItemCarrito(indCarrito, idProd) {
+function actualizarItemCarrito(indCarrito) {
+  let prodCarrito = carritoDeCompra[indCarrito];
   //obtengo el item del carrito mostrado en pantalla
-  let itemCarrito = document.getElementById(idProd);
+  let itemCarrito = document.getElementById(prodCarrito.id);
   //actualizo la nueva cantidad
-  itemCarrito.innerHTML = obtenerHtmlfilaTabla(carritoDeCompra[indCarrito]);
+  itemCarrito.innerHTML = obtenerHtmlfilaTabla(prodCarrito);
   mostrarTotalCarrito();
 }
 
 function quitarDeCarrito(itemCarrito) {
-  //verifico que un item del carrito llamo al evento
   let codProducto = itemCarrito.getAttribute("id");
   quitarDeCarritoCompra(codProducto);
   quitarElementoApagina(itemCarrito);
@@ -288,6 +286,10 @@ function quitarDeCarrito(itemCarrito) {
     : guardarLocal("carritoCompra", JSON.stringify(carritoDeCompra));
 }
 
+function quitarDeCarritoCompra(codProducto) {
+  carritoDeCompra = carritoDeCompra.filter((producto) => producto.id != codProducto);
+}
+
 function mostrarFormPago() {
   //verifico que la lista de compras no este vacia
   if (carritoDeCompra.length != 0) {
@@ -299,7 +301,7 @@ function mostrarFormPago() {
   }
 }
 function verificarDatosForm(formulario) {
-  return formulario.children[1].value == "" || formulario.children[3].value == "" || formulario.children[5].value == ""
+  return formulario.children[2].value == "" || formulario.children[6].value == "" || formulario.children[10].value == ""
     ? false
     : true;
 }
@@ -351,9 +353,6 @@ function vaciarCarritoCompra() {
   mostrarTotalCarrito();
 }
 
-function quitarDeCarritoCompra(codProducto) {
-  carritoDeCompra = carritoDeCompra.filter((producto) => producto.id != codProducto);
-}
 function buscarProductoNombre() {
   let nombreAbuscar = inputTextBuscador.value;
   ///hago un filtro de los productos que tienen de nombre el nombre buscado

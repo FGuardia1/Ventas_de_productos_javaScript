@@ -74,7 +74,7 @@
     top: -200%;
     z-index: 1;
     background-color: rgb(139, 139, 139);
-    padding: 20px;
+    padding: 5px;
     text-align: left;
     font-size: 22px;
     min-height: 400px;
@@ -91,5 +91,11 @@
     overflow: hidden;
     border: 1px solid #ddd;
     font-size: medium;
+  }
+
+  .opcionesItem {
+    margin: 5px;
+    height: 30px;
+    width: 30px;
   }
 }

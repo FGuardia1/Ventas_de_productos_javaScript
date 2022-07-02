@@ -192,10 +192,10 @@ body {
   position: absolute;
   margin: auto;
   top: 100%;
-  right: -140%;
+  right: -145%;
   z-index: 1;
   background-color: #8b8b8b;
-  padding: 20px;
+  padding: 5px;
   text-align: left;
   font-size: 15px;
   min-height: 200px;
@@ -203,8 +203,7 @@ body {
 }
 
 .oculto {
-  position: absolute;
-  left: -100%;
+  display: none;
 }
 
 .borrarProducto {
@@ -233,7 +232,6 @@ body {
   margin: 3px;
   height: 30px;
   width: 30px;
-  font-weight: bold;
 }
 
 .restar-producto {
@@ -594,7 +592,7 @@ input[type=text] {
     top: -200%;
     z-index: 1;
     background-color: #8b8b8b;
-    padding: 20px;
+    padding: 5px;
     text-align: left;
     font-size: 22px;
     min-height: 400px;
@@ -611,6 +609,12 @@ input[type=text] {
     overflow: hidden;
     border: 1px solid #ddd;
     font-size: medium;
+  }
+
+  .opcionesItem {
+    margin: 5px;
+    height: 30px;
+    width: 30px;
   }
 }
 
