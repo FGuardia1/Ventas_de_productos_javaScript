@@ -14,6 +14,7 @@ let botonBuscar = document.getElementById("botonBuscar");
 let seccionMuestrarioProd = document.getElementById("listaProductos");
 let botonCompra = document.getElementById("botonCompra");
 let formularioPago = document.getElementById("formPago");
+let contenedorFormulario = formularioPago.parentElement;
 
 ///Obtiene el array de productos guardados en un archivo json y lo asigna al array de productos del script
 obtenerProductosJson();
@@ -33,7 +34,7 @@ function crearListeners() {
   botonBuscar.addEventListener("click", buscarProductoNombre);
   formularioPago.addEventListener("submit", confirmarCompra);
   formularioPago.addEventListener("reset", () => {
-    ocultarElemento(formularioPago);
+    ocultarElemento(contenedorFormulario);
     mostrarElemento(botonCompra);
   });
 }
@@ -293,7 +294,7 @@ function quitarDeCarritoCompra(codProducto) {
 function mostrarFormPago() {
   //verifico que la lista de compras no este vacia
   if (carritoDeCompra.length != 0) {
-    mostrarElemento(formularioPago);
+    mostrarElemento(contenedorFormulario);
     ///oculto por el momento el boton de comprar, que muestra el formulario de pago
     ocultarElemento(botonCompra);
   } else {
@@ -301,7 +302,7 @@ function mostrarFormPago() {
   }
 }
 function verificarDatosForm(formulario) {
-  return formulario.children[2].value == "" || formulario.children[6].value == "" || formulario.children[10].value == ""
+  return formulario.children[1].value == "" || formulario.children[3].value == "" || formulario.children[5].value == ""
     ? false
     : true;
 }
@@ -335,7 +336,7 @@ function confirmarCompra(e) {
 function resetearEstadoCompra() {
   ///oculto el form de pago
   formularioPago.reset();
-  ocultarElemento(formularioPago);
+  ocultarElemento(contenedorFormulario);
   ////vacio el carrito
   vaciarCarritoCompra();
   ///muestro de nuevo el boton de comprar
